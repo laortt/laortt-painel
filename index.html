@@ -439,6 +439,37 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
   .l-title{letter-spacing:.08em}
 }
 
+
+/* ---------- eventos científicos e produtos ---------- */
+.t-evento{background:transparent;color:var(--brand-ink);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
+.cal-ev.t-evento{background:var(--surface);color:var(--brand-ink);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
+.dot.t-evento{background:transparent;box-shadow:inset 0 0 0 2px var(--brand-ink)}
+.evs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ev{padding:18px;display:flex;flex-direction:column;gap:10px;border-left:3px solid var(--brand-ink)}
+.ev.passado{opacity:.72;border-left-color:var(--line-2)}
+.ev-top{display:flex;gap:12px;align-items:flex-start}
+.ev-top .dateb{width:58px;flex:none}
+.ev-n{font-weight:700;font-size:16.5px;line-height:1.3}
+.ev-m{font-size:13.5px;color:var(--ink-2);display:flex;gap:6px;align-items:flex-start}
+.ev-m svg{flex:none;color:var(--muted);margin-top:2px}
+.ev-a{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+a.btn{text-decoration:none}
+.foto34{width:150px;aspect-ratio:3/4;border-radius:10px;border:1.5px dashed var(--line-2);background:var(--surface-2);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12.5px;text-align:center;padding:0;flex:none}
+.foto34 img{width:100%;height:100%;object-fit:cover;display:block}
+.foto34.tem{border-style:solid;border-color:var(--gold)}
+.pedido{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start}
+.foto-acts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.upl{position:relative;overflow:hidden}
+.upl input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.thumb{width:36px;height:48px;border-radius:5px;object-fit:cover;display:block;background:var(--surface-2);border:1px solid var(--line)}
+.thumb.vazio{display:grid;place-items:center;color:var(--muted);font-size:10px}
+.tam{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.tam th,.tam td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:center}
+.tam th:first-child,.tam td:first-child{text-align:left}
+.tam thead th{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tam tfoot td{font-weight:700;border-bottom:0}
+@media (max-width:640px){ .pedido{grid-template-columns:1fr} .foto34{width:140px} }
+
 /* ---------- responsive ---------- */
 @media (max-width:1100px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -655,6 +686,9 @@ const ICONS = {
   eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   alert: '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+  upload: '<path d="M12 21V9m0 0-4 4m4-4 4 4M4 3h16"/>',
+  award: '<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/>',
+  shirt: '<path d="M20.4 6.6 16 4l-1.5 1.5a3.5 3.5 0 0 1-5 0L8 4 3.6 6.6a1 1 0 0 0-.4 1.3l1.6 3a1 1 0 0 0 1.3.4L7 10.8V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9.2l.9.5a1 1 0 0 0 1.3-.4l1.6-3a1 1 0 0 0-.4-1.3z"/>',
   hosp: '<path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16M2 21h20M12 7v6M9 10h6"/>',
   edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'
@@ -687,7 +721,7 @@ const lsGet = k => { try { return localStorage.getItem(k); } catch { return null
 const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sem armazenamento */ } };
 
 /* ================= domínio ================= */
-const TIPOS = { aula: 'Aula fechada', pratica: 'Prática' };
+const TIPOS = { aula: 'Aula fechada', pratica: 'Prática', evento: 'Evento científico' };
 const PUBLICOS = { todos: 'Todos os membros', junior: 'Membros Júnior (até o P4)', pleno: 'Membros Plenos (a partir do P5)' };
 const CATEG = { junior: 'Júnior', pleno: 'Pleno' };
 const STATUS = {
@@ -701,18 +735,21 @@ const MODULOS = [
   ['praticas', 'Dias de prática', 'Criar, editar e montar escalas'],
   ['presencas', 'Presenças', 'Lançar presença, falta e justificativa'],
   ['campos', 'Campos de prática', 'Cadastrar campos e gerar dias'],
-  ['membros', 'Membros', 'Cadastro e dados de contato']
+  ['membros', 'Membros', 'Cadastro e dados de contato'],
+  ['eventos', 'Eventos científicos', 'Cadastrar e editar eventos'],
+  ['produtos', 'Produtos LAORTT', 'Ver e editar os pedidos de todos os membros']
 ];
 const PAPEIS = ['presidencia', 'diretoria', 'coordenacao', 'membro'];
 const CONFIG_PADRAO = {
   papeis: {
-    presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true },
-    diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false },
-    coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false },
-    membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false }
+    presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true, eventos: true, produtos: true },
+    diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false, eventos: true, produtos: true },
+    coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false, eventos: false, produtos: false },
+    membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false }
   },
   exibicao: { frequenciaDeTodos: true },
-  regras: { freqMinima: 75, justificadaAbona: true }
+  regras: { freqMinima: 75, justificadaAbona: true },
+  produtos: { abertos: true }
 };
 const MEMBROS_INICIAIS = [
   ['Ailton Júnior', 'junior'], ['Bruna Souto', 'junior'], ['Daniel Martins', 'junior'], ['Dannyell Jacintho', 'junior'], ['Diego Cahet', 'junior'],
@@ -728,6 +765,7 @@ function mergeConfig(raw) {
     for (const p of PAPEIS) if (raw.papeis && raw.papeis[p]) Object.assign(c.papeis[p], raw.papeis[p]);
     Object.assign(c.exibicao, raw.exibicao || {});
     Object.assign(c.regras, raw.regras || {});
+    Object.assign(c.produtos, raw.produtos || {});
   }
   for (const [m] of MODULOS) { c.papeis.presidencia[m] = true; c.papeis.membro[m] = false; }
   c.regras.freqMinima = Math.min(100, Math.max(0, Number(c.regras.freqMinima) || 0));
@@ -740,13 +778,14 @@ const S = {
   authUser: null, email: null, meuAcesso: null, acessoCarregado: true,
   instalado: null, semRegras: false,
   semDb: false, semConfig: false, lento: false, somenteLeitura: false,
+  eventos: new Map(), produtos: new Map(), fotos: new Map(), fEv: 'proximos', rascunhos: {}, gavetaPedido: null,
   membros: new Map(), atividades: new Map(), atRaw: new Map(), presRaw: new Map(), campos: new Map(), restrito: new Map(), acessos: new Map(),
   configRaw: null, config: mergeConfig(null),
   loaded: { membros: false, atividades: false, campos: false, config: false },
   privSubs: [], novoAcesso: null,
   view: 'painel', previa: null,
   mes: (() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })(),
-  diaSel: hoje(), agendaTipos: { aula: true, pratica: true },
+  diaSel: hoje(), agendaTipos: { aula: true, pratica: true, evento: true },
   fAt: { tipo: 'todas', periodo: 'proximas', status: 'todos', q: '' },
   fMb: { cat: 'todos', sit: 'todas', st: 'ativos', q: '' },
   verTodosFreq: false, verTodosRodizio: false,
@@ -789,6 +828,7 @@ function statusEf(a) {
   return 'agendada';
 }
 function tituloAt(a) {
+  if (a.tipo === 'evento') return a.nome || 'Evento científico';
   if (a.titulo) return a.titulo;
   if (a.tipo === 'pratica') { const c = S.campos.get(a.campoId); return c ? c.nome : 'Prática'; }
   return 'Aula fechada';
@@ -906,12 +946,22 @@ function mesclar() {
   for (const [id, a] of S.atRaw) m.set(id, { ...a, presencas: (S.presRaw.get(id) || {}).registros || {} });
   S.atividades = m;
 }
-let chavePriv = '';
+let chavePriv = '', migrado = false;
+function migrarConfig(r) {
+  // painéis configurados antes das abas novas: grava as permissões padrão de Eventos e Produtos uma única vez
+  if (migrado || r !== 'presidencia' || !S.configRaw || !S.configRaw.papeis) return;
+  const d = S.configRaw.papeis.diretoria || {};
+  if ('eventos' in d && 'produtos' in d) return;
+  migrado = true;
+  const novo = clone({ papeis: S.config.papeis, exibicao: S.config.exibicao, regras: S.config.regras, produtos: S.config.produtos, atualizadoEm: new Date().toISOString() });
+  gravar('config/papeis', novo).catch(() => { migrado = false; });
+}
 function pararPrivados() {
   for (const u of S.privSubs) u();
   S.privSubs = []; chavePriv = '';
   S.presRaw = new Map(); S.restrito = new Map(); S.acessos = new Map();
   S.membros = new Map(); S.atRaw = new Map(); S.campos = new Map();
+  S.eventos = new Map(); S.produtos = new Map(); S.fotos = new Map(); S.rascunhos = {};
   S.loaded.membros = S.loaded.atividades = S.loaded.campos = false; S.lento = false;
   clearTimeout(S.timerLento);
   mesclar();
@@ -920,7 +970,10 @@ function assinarPrivados() {
   if (!S.db) return;
   const r = S.meuAcesso && PAPEIS.includes(S.meuAcesso.papel) ? S.meuAcesso.papel : '';
   const verRestrito = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].membros);
-  const chave = `${S.email}|${r}|${verRestrito}`;
+  const gestorProd = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].produtos);
+  const mid = (S.meuAcesso && S.meuAcesso.membroId) || '';
+  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}`;
+  migrarConfig(r);
   if (chave === chavePriv) return;
   pararPrivados(); chavePriv = chave;
   if (!r) return;
@@ -928,6 +981,14 @@ function assinarPrivados() {
   S.privSubs.push(ouvir(S.db.collection('atividades'), s => { S.atRaw = mapaDe(s); mesclar(); S.loaded.atividades = true; agendar(); }, e => { negado(e); S.loaded.atividades = true; }));
   S.privSubs.push(ouvir(S.db.collection('campos'), s => { S.campos = mapaDe(s); S.loaded.campos = true; agendar(); }, e => { negado(e); S.loaded.campos = true; }));
   S.timerLento = setTimeout(() => { if (!(S.loaded.membros && S.loaded.atividades)) { S.lento = true; agendar(); } }, 10000);
+  S.privSubs.push(ouvir(S.db.collection('eventos'), s => { S.eventos = mapaDe(s); agendar(); }));
+  if (gestorProd) {
+    S.privSubs.push(ouvir(S.db.collection('produtos'), s => { S.produtos = mapaDe(s); agendar(); }));
+    S.privSubs.push(ouvir(S.db.collection('fotos'), s => { S.fotos = mapaDe(s); agendar(); }));
+  } else if (mid) {
+    S.privSubs.push(ouvir(S.db.doc('produtos/' + mid), d => { S.produtos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
+    S.privSubs.push(ouvir(S.db.doc('fotos/' + mid), d => { S.fotos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
+  }
   S.privSubs.push(ouvir(S.db.collection('presencas'), snap => { S.presRaw = mapaDe(snap); mesclar(); agendar(); }));
   if (verRestrito) S.privSubs.push(ouvir(S.db.collection('restrito'), snap => { S.restrito = mapaDe(snap); agendar(); }));
   if (r === 'presidencia') S.privSubs.push(ouvir(S.db.collection('acesso'), snap => { S.acessos = mapaDe(snap); agendar(); }));
@@ -1107,7 +1168,7 @@ function barras(items, o = {}) {
 /* ================= render ================= */
 let pendente = false;
 function agendar() { if (pendente) return; pendente = true; requestAnimationFrame(() => { pendente = false; render(); }); }
-const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'membros', 'acesso'];
+const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'membros', 'produtos', 'acesso'];
 function lerRota() {
   const r = location.hash.slice(1);
   S.view = ROTAS.includes(r) ? r : (r ? 'painel' : 'inicio');
@@ -1146,7 +1207,7 @@ function render() {
 function renderNav() {
   const itens = [
     ['inicio', 'Quem somos', 'info'], ['painel', 'Visão geral', 'home'], ['agenda', 'Agenda', 'cal'], ['atividades', 'Aulas e práticas', 'list'],
-    ['praticas', 'Campos de prática', 'hosp'], ['membros', 'Membros', 'users']
+    ['praticas', 'Campos de prática', 'hosp'], ['eventos', 'Eventos científicos', 'award'], ['membros', 'Membros', 'users'], ['produtos', 'Produtos LAORTT', 'shirt']
   ];
   if (vePermissoes()) itens.push(['acesso', 'Permissões', 'shield']);
   $('#nav').replaceChildren(...itens.map(([id, l, i]) => h('a', { href: '#' + id, 'aria-current': S.view === id ? 'page' : null }, ic(i), l)));
@@ -1299,7 +1360,7 @@ function vPainel() {
     pageHead('Visão geral', dataLonga, acoes), kpis,
     h('div', { class: 'cols' },
       h('div', { class: 'stack' }, proxCard, pendCard),
-      h('div', { class: 'stack' }, minhaParticipacao(), freqCard)));
+      h('div', { class: 'stack' }, minhaParticipacao(), cardProximosEventos(), freqCard)));
 }
 function primeirosPassos() {
   const temMembros = S.membros.size > 0;
@@ -1355,6 +1416,13 @@ function vAgenda() {
     if (!porDia.has(a.data)) porDia.set(a.data, []);
     porDia.get(a.data).push(a);
   }
+  if (S.agendaTipos.evento) for (const e of eventosOrdenados()) {
+    const fim = e.dataFim && e.dataFim > e.data ? e.dataFim : e.data;
+    for (let d = e.data, n = 0; d <= fim && n < 21; d = addDias(d, 1), n++) {
+      if (!porDia.has(d)) porDia.set(d, []);
+      porDia.get(d).unshift({ ...e, tipo: 'evento', titulo: e.nome, status: '' });
+    }
+  }
   const grid = h('div', { class: 'cal', role: 'grid', id: 'calendario' });
   for (const d of DOW) grid.append(h('div', { class: 'cal-dow', role: 'columnheader' }, d));
   for (let i = 0; i < semanas * 7; i++) {
@@ -1367,7 +1435,7 @@ function vAgenda() {
     if (iso === S.diaSel) cls.push('sel');
     const cell = h('div', { class: cls.join(' '), role: 'gridcell', onclick: e => { if (e.target.closest('.cal-ev')) return; S.diaSel = iso; agendar(); } },
       h('button', { type: 'button', class: 'cal-n', 'aria-label': fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' }) + (evs.length ? `, ${plural(evs.length, 'atividade', 'atividades')}` : '') }, dt.getDate()),
-      evs.slice(0, 3).map(a => h('button', { type: 'button', class: `cal-ev t-${a.tipo}${a.status === 'cancelada' ? ' cancel' : ''}`, title: `${TIPOS[a.tipo]}: ${tituloAt(a)}`, onclick: () => gavetaAtividade(a.id) },
+      evs.slice(0, 3).map(a => h('button', { type: 'button', class: `cal-ev t-${a.tipo}${a.status === 'cancelada' ? ' cancel' : ''}`, title: `${TIPOS[a.tipo]}: ${tituloAt(a)}`, onclick: () => a.tipo === 'evento' ? gavetaEvento(a.id) : gavetaAtividade(a.id) },
         (a.inicio ? a.inicio + ' ' : '') + tituloAt(a))),
       evs.length > 3 ? h('span', { class: 'cal-more' }, `+${evs.length - 3}`) : null,
       evs.length ? h('span', { class: 'dots', 'aria-hidden': 'true' }, evs.slice(0, 4).map(a => h('span', { class: 'dot t-' + a.tipo }))) : null);
@@ -1377,8 +1445,8 @@ function vAgenda() {
   const nomeMesBruto = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   const nomeMes = nomeMesBruto.charAt(0).toUpperCase() + nomeMesBruto.slice(1);
   const filtro = h('div', { class: 'seg', role: 'group', 'aria-label': 'Tipos exibidos' },
-    ['aula', 'pratica'].map(tp => h('button', { type: 'button', 'aria-pressed': String(S.agendaTipos[tp]), onclick: () => { S.agendaTipos[tp] = !S.agendaTipos[tp]; agendar(); } },
-      h('span', { class: 'dot t-' + tp, style: 'display:inline-block;margin-right:6px;vertical-align:middle' }), tp === 'aula' ? 'Aulas fechadas' : 'Práticas')));
+    ['aula', 'pratica', 'evento'].map(tp => h('button', { type: 'button', 'aria-pressed': String(S.agendaTipos[tp]), onclick: () => { S.agendaTipos[tp] = !S.agendaTipos[tp]; agendar(); } },
+      h('span', { class: 'dot t-' + tp, style: 'display:inline-block;margin-right:6px;vertical-align:middle' }), tp === 'aula' ? 'Aulas fechadas' : tp === 'pratica' ? 'Práticas' : 'Eventos')));
   const calCard = h('section', { class: 'card' },
     h('div', { class: 'cal-head' },
       h('div', { class: 'cal-nav' }, h('button', { type: 'button', class: 'icon-btn', 'aria-label': 'Mês anterior', onclick: () => mudarMes(-1) }, ic('left')),
@@ -1392,7 +1460,7 @@ function vAgenda() {
   const podeCriar = pode('aulas') || pode('praticas');
   const diaCard = card(fmt(S.diaSel, { weekday: 'long', day: 'numeric', month: 'long' }), evDia.length ? plural(evDia.length, 'atividade', 'atividades') : 'Dia livre',
     h('div', null,
-      evDia.length ? h('div', { class: 'rows' }, evDia.map(linhaAtividade)) : h('div', { class: 'empty' }, 'Nenhuma atividade neste dia.'),
+      evDia.length ? h('div', { class: 'rows' }, evDia.map(a => a.tipo === 'evento' ? linhaEvento(a) : linhaAtividade(a))) : h('div', { class: 'empty' }, 'Nenhuma atividade neste dia.'),
       podeCriar ? h('div', { class: 'filters', style: 'padding:12px 18px 16px;border-top:1px solid var(--line)' },
         pode('aulas') ? btn('Aula fechada', () => gavetaAtividade(null, { tipo: 'aula', data: S.diaSel }), { sm: true, icon: 'plus', kind: 'primary' }) : null,
         pode('praticas') ? btn('Prática', () => gavetaAtividade(null, { tipo: 'pratica', data: S.diaSel }), { sm: true, icon: 'plus' }) : null) : null),
@@ -1547,7 +1615,7 @@ function vAcesso() {
   const ed = editaPermissoes();
   const cfg = S.config;
   const salvarCfg = async (mut, msg) => {
-    const novo = clone({ papeis: cfg.papeis, exibicao: cfg.exibicao, regras: cfg.regras });
+    const novo = clone({ papeis: cfg.papeis, exibicao: cfg.exibicao, regras: cfg.regras, produtos: cfg.produtos });
     mut(novo);
     novo.atualizadoEm = new Date().toISOString();
     S.config = mergeConfig(novo); agendar();
@@ -1632,7 +1700,236 @@ function vAcesso() {
     h('div', { class: 'cols' }, h('div', { class: 'stack' }, exib), h('div', { class: 'stack' }, regras, previa)));
 }
 
-const VIEWS = { painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
+/* ================= eventos científicos ================= */
+function eventosOrdenados() { return [...S.eventos.values()].filter(e => validISO(e.data)).sort((a, b) => a.data.localeCompare(b.data)); }
+function periodoEvento(e) {
+  if (e.dataFim && e.dataFim > e.data) {
+    const mesmoMes = e.data.slice(0, 7) === e.dataFim.slice(0, 7);
+    return mesmoMes ? `${parseISO(e.data).getDate()} a ${fmt(e.dataFim, { day: 'numeric', month: 'long', year: 'numeric' })}` : `${fmt(e.data, { day: 'numeric', month: 'short' })} a ${fmt(e.dataFim, { day: 'numeric', month: 'short', year: 'numeric' })}`;
+  }
+  return fmt(e.data, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+const linkOk = u => /^https?:\/\//i.test(String(u || '').trim());
+function linhaEvento(e) {
+  return h('button', { type: 'button', class: 'row', onclick: () => gavetaEvento(e.id) },
+    dateBlock(e.data),
+    h('span', { class: 'row-main' }, h('span', { class: 'row-top' }, h('span', { class: 'chip t-evento' }, 'Evento científico')),
+      h('span', { class: 'row-title' }, e.nome || 'Evento'), h('span', { class: 'row-meta' }, [periodoEvento(e), e.local].filter(Boolean).join(' · '))),
+    h('span', { class: 'row-side' }));
+}
+function cartaoEvento(e) {
+  const passado = (e.dataFim || e.data) < hoje();
+  return h('article', { class: 'card ev' + (passado ? ' passado' : '') },
+    h('div', { class: 'ev-top' }, dateBlock(e.data), h('div', { style: 'min-width:0' }, h('div', { class: 'ev-n' }, e.nome || 'Evento'), passado ? h('span', { class: 'pill s-neutro', style: 'margin-top:4px' }, 'Encerrado') : null)),
+    h('div', { class: 'ev-m' }, ic('cal', 15), periodoEvento(e)),
+    e.local ? h('div', { class: 'ev-m' }, ic('pin', 15), e.local) : null,
+    e.obs ? h('div', { class: 'ev-m' }, ic('info', 15), e.obs) : null,
+    h('div', { class: 'ev-a' },
+      linkOk(e.link) ? h('a', { class: 'btn btn-primary btn-sm', href: e.link.trim(), target: '_blank', rel: 'noopener noreferrer' }, ic('right', 15), h('span', null, 'Acessar o evento')) : h('span', { class: 'card-s' }, 'Sem link cadastrado'),
+      pode('eventos') ? btn('Editar', () => gavetaEvento(e.id), { sm: true, icon: 'edit' }) : null));
+}
+function vEventos() {
+  const t = hoje();
+  const todos = eventosOrdenados();
+  const prox = todos.filter(e => (e.dataFim || e.data) >= t);
+  const pass = todos.filter(e => (e.dataFim || e.data) < t).reverse();
+  const lista = S.fEv === 'passados' ? pass : prox;
+  return h('div', { class: 'page' },
+    pageHead('Eventos científicos', 'Congressos, jornadas, simpósios e cursos', [pode('eventos') ? btn('Novo evento', () => gavetaEvento(null), { kind: 'primary', icon: 'plus' }) : null]),
+    h('div', { class: 'filters' }, seg([['proximos', `Próximos (${prox.length})`], ['passados', `Encerrados (${pass.length})`]], S.fEv, v => { S.fEv = v; agendar(); }, { label: 'Período' })),
+    lista.length ? h('div', { class: 'evs', id: 'lista-eventos' }, lista.map(cartaoEvento))
+      : h('section', { class: 'card' }, h('div', { class: 'empty' }, S.fEv === 'passados' ? 'Nenhum evento encerrado.' : h('span', null, h('b', null, 'Nenhum evento científico agendado. '), pode('eventos') ? 'Cadastre congressos, jornadas e cursos de interesse da liga.' : 'Os eventos cadastrados pela diretoria aparecem aqui.'),
+        S.fEv !== 'passados' && pode('eventos') ? btn('Cadastrar evento', () => gavetaEvento(null), { kind: 'primary', icon: 'plus', sm: true }) : null)));
+}
+function cardProximosEventos() {
+  const prox = eventosOrdenados().filter(e => (e.dataFim || e.data) >= hoje()).slice(0, 3);
+  if (!prox.length) return null;
+  return card('Próximos eventos científicos', null, h('div', { class: 'rows' }, prox.map(linhaEvento)),
+    { flush: true, id: 'proximos-eventos', action: btn('Ver todos', () => { location.hash = 'eventos'; }, { kind: 'text', sm: true }) });
+}
+function gavetaEvento(id) {
+  S.gavetaToken = {};
+  const orig = id ? S.eventos.get(id) : null;
+  if (id && !orig) { toast('Este evento não existe mais.', 'warn'); return; }
+  const novo = !orig, ed = pode('eventos');
+  const f = orig ? clone(orig) : { nome: '', data: '', dataFim: '', local: '', link: '', obs: '' };
+  const corpo = [h('div', { class: 'sec' }, !ed ? h('div', { class: 'note' }, 'Somente leitura para o seu papel.') : null, h('div', { class: 'grid2' },
+    field('Nome do evento', inp('ev-nome', f.nome, { disabled: !ed, placeholder: 'Ex.: Congresso Brasileiro de Ortopedia e Traumatologia', oninput: e => { f.nome = e.target.value; } }), { wide: true }),
+    field('Data', inp('ev-data', f.data, { type: 'date', disabled: !ed, oninput: e => { f.data = e.target.value; } })),
+    field('Término (opcional)', inp('ev-fim', f.dataFim, { type: 'date', disabled: !ed, oninput: e => { f.dataFim = e.target.value; } })),
+    field('Local', inp('ev-local', f.local, { disabled: !ed, placeholder: 'Cidade, centro de convenções ou "on-line"', oninput: e => { f.local = e.target.value; } }), { wide: true }),
+    field('Link de acesso', inp('ev-link', f.link, { type: 'url', disabled: !ed, placeholder: 'https://…', oninput: e => { f.link = e.target.value; } }), { wide: true, hint: 'Site do evento, inscrição ou transmissão.' }),
+    field('Observações', h('textarea', { id: 'ev-obs', class: 'in', disabled: !ed, oninput: e => { f.obs = e.target.value; } }, f.obs || ''), { wide: true })),
+    !ed && linkOk(f.link) ? h('a', { class: 'btn btn-primary', href: f.link.trim(), target: '_blank', rel: 'noopener noreferrer' }, 'Acessar o evento') : null)];
+  const salvar = async () => {
+    const nome = String(f.nome || '').trim();
+    if (!nome) { toast('Informe o nome do evento.', 'warn'); return; }
+    if (!validISO(f.data)) { toast('Informe a data do evento.', 'warn'); return; }
+    if (f.dataFim && (!validISO(f.dataFim) || f.dataFim < f.data)) { toast('O término não pode ser antes da data de início.', 'warn'); return; }
+    if (f.link && !linkOk(f.link)) { toast('O link precisa começar com https://', 'warn'); return; }
+    const doc = carimbo({ nome, data: f.data, dataFim: f.dataFim || '', local: String(f.local || '').trim(), link: String(f.link || '').trim(), obs: String(f.obs || ''), criadoEm: orig ? orig.criadoEm || null : null, criadoPor: orig ? orig.criadoPor || null : null }, novo);
+    try { await gravar(`eventos/${orig ? orig.id : novoId('ev')}`, doc); toast(novo ? 'Evento cadastrado.' : 'Evento atualizado.', 'good'); fecharGaveta(); } catch { /* tratado */ }
+  };
+  const excluir = async () => { try { await gravar(`eventos/${id}`, null, { apagar: true }); toast('Evento excluído.'); fecharGaveta(); } catch { /* tratado */ } };
+  abrirGaveta({ titulo: novo ? 'Novo evento científico' : f.nome, sub: 'Evento científico', corpo,
+    rodape: [!novo && ed ? botaoExcluir('Excluir', excluir) : null, h('span', { class: 'sp' }), ed ? btn(novo ? 'Cadastrar' : 'Salvar', salvar, { kind: 'primary', id: 'ev-salvar' }) : btn('Fechar', fecharGaveta)] });
+}
+
+/* ================= produtos LAORTT ================= */
+const TAMANHOS = ['PP', 'P', 'M', 'G', 'GG', 'XGG'];
+const MODELOS = { tradicional: 'Tradicional', babylook: 'Babylook' };
+const pedidosAbertos = () => !(S.config.produtos && S.config.produtos.abertos === false);
+const pedidoDe = mid => S.produtos.get(mid) || null;
+const fotoDe = mid => (S.fotos.get(mid) || {}).foto || '';
+function processarFoto(file) {
+  return new Promise((res, rej) => {
+    if (!file || !/^image\//.test(file.type || 'image/')) { rej(new Error('tipo')); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const W = 450, H = 600, alvo = W / H;
+      let sw = img.naturalWidth, sh = img.naturalHeight, sx = 0, sy = 0;
+      if (sw / sh > alvo) { const nw = sh * alvo; sx = (sw - nw) / 2; sw = nw; } else { const nh = sw / alvo; sy = (sh - nh) * 0.35; sh = nh; }
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+      g.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+      URL.revokeObjectURL(url);
+      let q = 0.86, out = c.toDataURL('image/jpeg', q);
+      while (out.length > 400000 && q > 0.5) { q -= 0.08; out = c.toDataURL('image/jpeg', q); }
+      res(out);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('formato')); };
+    img.src = url;
+  });
+}
+function formPedido(mid, { compacto = false, aoSalvar } = {}) {
+  const m = S.membros.get(mid);
+  const p = pedidoDe(mid) || {};
+  const gestor = pode('produtos');
+  const meu = mid === meuMembroId();
+  const podeEditar = !!S.db && (gestor || (meu && pedidosAbertos() && !S.previa));
+  const st = S.rascunhos[mid] || { tamanho: p.tamanho || '', modelo: p.modelo || 'tradicional', nomeCracha: p.nomeCracha || (m ? m.nome : ''), foto: null };
+  const mudar = (k, v) => { S.rascunhos[mid] = st; st[k] = v; };
+  const fotoAtual = st.foto || fotoDe(mid);
+  const quadro = h('div', { class: 'foto34' + (fotoAtual ? ' tem' : ''), id: 'foto-' + mid }, fotoAtual ? h('img', { src: fotoAtual, alt: 'Foto para o crachá' }) : h('span', null, 'Foto 3×4', h('br'), 'para o crachá'));
+  const input = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/heic', 'aria-label': 'Enviar foto para o crachá', disabled: !podeEditar,
+    onchange: async e => {
+      const file = e.target.files && e.target.files[0]; if (!file) return;
+      if (file.size > 15 * 1024 * 1024) { toast('A foto passa de 15 MB. Envie uma imagem menor.', 'warn'); return; }
+      try { mudar('foto', await processarFoto(file)); agendar(); if ($('#drawer').classList.contains('open') && S.gavetaPedido === mid) gavetaPedido(mid); }
+      catch { toast('Não foi possível ler esta imagem. Envie em JPG ou PNG.', 'bad'); }
+    } });
+  const salvar = async () => {
+    if (!st.tamanho) { toast('Escolha o tamanho da camisa.', 'warn'); return; }
+    const agora = new Date().toISOString();
+    try {
+      if (st.foto) await gravar(`fotos/${mid}`, { foto: st.foto, atualizadoEm: agora, atualizadoPor: quemSou() });
+      await gravar(`produtos/${mid}`, { tamanho: st.tamanho, modelo: st.modelo, nomeCracha: String(st.nomeCracha || '').trim(), temFoto: !!(st.foto || fotoDe(mid)), atualizadoEm: agora, atualizadoPor: quemSou() });
+      delete S.rascunhos[mid];
+      toast('Pedido salvo.', 'good');
+      if (aoSalvar) aoSalvar(); else agendar();
+    } catch { /* tratado */ }
+  };
+  const dados = h('div', { class: 'sec', style: 'gap:14px' },
+    field('Tamanho da camisa', seg(TAMANHOS.map(t => [t, t]), st.tamanho, v => { mudar('tamanho', v); agendar(); if (S.gavetaPedido === mid) gavetaPedido(mid); }, { disabled: !podeEditar, label: 'Tamanho da camisa', id: 'tam-' + mid })),
+    field('Modelo', seg(Object.entries(MODELOS), st.modelo, v => { mudar('modelo', v); agendar(); if (S.gavetaPedido === mid) gavetaPedido(mid); }, { disabled: !podeEditar, label: 'Modelo', id: 'mod-' + mid })),
+    field('Nome no crachá', inp('cracha-' + mid, st.nomeCracha, { disabled: !podeEditar, placeholder: 'Como deve aparecer no crachá', oninput: e => { mudar('nomeCracha', e.target.value); } }), { hint: 'Ex.: Diego Cahet. Evite nomes completos longos.' }),
+    p.atualizadoEm ? h('div', { class: 'fld-h' }, `Último envio em ${fmtCurta(p.atualizadoEm.slice(0, 10))}${p.atualizadoPor ? ' por ' + p.atualizadoPor : ''}.`) : null,
+    podeEditar && !compacto ? h('div', null, btn(p.atualizadoEm ? 'Atualizar pedido' : 'Enviar pedido', salvar, { kind: 'primary', icon: 'check', id: 'salvar-pedido' })) : null);
+  const fotoCol = h('div', null, quadro, podeEditar ? h('div', { class: 'foto-acts' },
+    h('label', { class: 'btn btn-ghost btn-sm upl' }, ic('upload', 15), h('span', null, fotoAtual ? 'Trocar foto' : 'Enviar foto'), input),
+    h('span', { class: 'fld-h', style: 'max-width:150px' }, 'Rosto de frente, fundo claro, sem óculos escuros. A foto é recortada em 3×4.')) : null);
+  return { el: h('div', { class: 'pedido' }, fotoCol, dados), salvar, podeEditar };
+}
+function gavetaPedido(mid) {
+  S.gavetaToken = {}; S.gavetaPedido = mid;
+  const m = S.membros.get(mid);
+  const f = formPedido(mid, { compacto: true, aoSalvar: () => { S.gavetaPedido = null; fecharGaveta(); } });
+  abrirGaveta({ titulo: m ? m.nome : 'Pedido', sub: 'Produtos LAORTT', corpo: [f.el],
+    rodape: [h('span', { class: 'sp' }), btn('Fechar', () => { S.gavetaPedido = null; fecharGaveta(); }), f.podeEditar ? btn('Salvar pedido', f.salvar, { kind: 'primary' }) : null] });
+}
+async function baixarFotosZip() {
+  const com = membrosAtivos().filter(m => fotoDe(m.id));
+  if (!com.length) { toast('Nenhuma foto enviada ainda.', 'warn'); return; }
+  try {
+    if (!window.JSZip) await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'; s.onload = res; s.onerror = rej; document.head.append(s); });
+    const zip = new window.JSZip();
+    for (const m of com) {
+      const p = pedidoDe(m.id) || {};
+      zip.file(`${slug(p.nomeCracha || m.nome)}-${p.tamanho || 'sem-tamanho'}.jpg`, fotoDe(m.id).split(',')[1], { base64: true });
+    }
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = h('a', { href: url, download: `laortt-fotos-cracha-${hoje()}.zip`, style: 'display:none' });
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch { toast('Não foi possível gerar o arquivo com as fotos. Verifique a conexão.', 'bad'); }
+}
+function exportarPedidos() {
+  const rows = [['Nome', 'Categoria', 'Nome no crachá', 'Tamanho', 'Modelo', 'Foto enviada', 'Último envio']];
+  for (const m of membrosAtivos()) {
+    const p = pedidoDe(m.id) || {};
+    rows.push([m.nome, CATEG[m.categoria] || '', p.nomeCracha || '', p.tamanho || '', p.tamanho ? MODELOS[p.modelo || 'tradicional'] : '', fotoDe(m.id) || p.temFoto ? 'Sim' : 'Não', p.atualizadoEm ? fmtCurta(p.atualizadoEm.slice(0, 10)) : '']);
+  }
+  baixar(`laortt-pedidos-${hoje()}.csv`, csv(rows));
+}
+function vProdutos() {
+  const mid = meuMembroId();
+  const gestor = pode('produtos');
+  const blocos = [];
+  if (!pedidosAbertos()) blocos.push(h('div', { class: 'banner warn' }, ic('clock'), h('span', { class: 'grow' }, h('b', null, 'Pedidos encerrados. '), gestor ? 'Os membros não podem mais alterar o próprio pedido; a equipe de produtos ainda pode.' : 'Para alguma alteração, fale com a diretoria.')));
+  if (mid && S.membros.has(mid)) {
+    const f = formPedido(mid);
+    blocos.push(card('Meu pedido', 'Camisa e crachá da liga', f.el, { id: 'meu-pedido' }));
+  } else {
+    blocos.push(card('Meu pedido', null, h('div', { class: 'note' }, 'Seu e-mail ainda não está vinculado ao seu nome na lista de membros. Peça à presidência para fazer o vínculo em Permissões; depois disso você poderá enviar tamanho e foto aqui.'), { id: 'meu-pedido' }));
+  }
+  if (gestor) {
+    const ativos = membrosAtivos();
+    const enviados = ativos.filter(m => pedidoDe(m.id) && pedidoDe(m.id).tamanho);
+    const comFoto = ativos.filter(m => fotoDe(m.id));
+    const cont = {}; for (const t of TAMANHOS) cont[t] = { tradicional: 0, babylook: 0 };
+    for (const m of enviados) { const p = pedidoDe(m.id); if (cont[p.tamanho]) cont[p.tamanho][p.modelo === 'babylook' ? 'babylook' : 'tradicional']++; }
+    const tot = { tradicional: 0, babylook: 0 }; for (const t of TAMANHOS) { tot.tradicional += cont[t].tradicional; tot.babylook += cont[t].babylook; }
+    const resumo = h('table', { class: 'tam', id: 'resumo-tamanhos' },
+      h('thead', null, h('tr', null, h('th', null, 'Tamanho'), h('th', null, 'Tradicional'), h('th', null, 'Babylook'), h('th', null, 'Total'))),
+      h('tbody', null, TAMANHOS.map(t => h('tr', null, h('td', null, t), h('td', null, cont[t].tradicional), h('td', null, cont[t].babylook), h('td', null, cont[t].tradicional + cont[t].babylook)))),
+      h('tfoot', null, h('tr', null, h('td', null, 'Total'), h('td', null, tot.tradicional), h('td', null, tot.babylook), h('td', null, tot.tradicional + tot.babylook))));
+    const tbody = h('tbody');
+    for (const m of ativos) {
+      const p = pedidoDe(m.id) || {};
+      const foto = fotoDe(m.id);
+      const sit = p.tamanho && foto ? h('span', { class: 'pill s-realizada' }, '✓ Completo') : p.tamanho ? h('span', { class: 'pill s-pendente' }, '! Falta a foto') : foto ? h('span', { class: 'pill s-pendente' }, '! Falta o tamanho') : h('span', { class: 'pill s-neutro' }, 'Não enviado');
+      const abrir = () => gavetaPedido(m.id);
+      tbody.append(h('tr', { tabindex: '0', onclick: abrir, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } } },
+        h('td', null, foto ? h('img', { class: 'thumb', src: foto, alt: '' }) : h('span', { class: 'thumb vazio' }, '3×4')),
+        h('td', null, h('div', { class: 'nm' }, m.nome), p.nomeCracha && p.nomeCracha !== m.nome ? h('div', { class: 'nm-s' }, 'Crachá: ' + p.nomeCracha) : null),
+        h('td', null, h('span', { class: m.categoria === 'pleno' ? 'chip t-aula' : 'chip t-pratica' }, CATEG[m.categoria] || '—')),
+        h('td', { class: 'num' }, p.tamanho || '—'),
+        h('td', null, p.tamanho ? MODELOS[p.modelo || 'tradicional'] : '—'),
+        h('td', null, sit)));
+    }
+    const acoes = h('div', { class: 'filters' },
+      btn('Exportar lista', exportarPedidos, { icon: 'download', sm: true, title: 'Planilha CSV com nomes, tamanhos e modelos' }),
+      btn('Baixar fotos (ZIP)', baixarFotosZip, { icon: 'download', sm: true, title: 'Fotos nomeadas pelo nome do crachá e tamanho' }),
+      editaPermissoes() ? h('label', { class: 'switch', style: 'margin-left:auto' }, h('input', { type: 'checkbox', id: 'pedidos-abertos', checked: pedidosAbertos(),
+        onchange: async e => {
+          const v = e.target.checked;
+          const novo = clone({ papeis: S.config.papeis, exibicao: S.config.exibicao, regras: S.config.regras, produtos: { abertos: v }, atualizadoEm: new Date().toISOString() });
+          try { await gravar('config/papeis', novo); toast(v ? 'Pedidos reabertos para os membros.' : 'Pedidos encerrados para os membros.', 'good'); } catch { agendar(); }
+        } }), h('span', null, 'Membros podem enviar ou alterar o pedido')) : null);
+    blocos.push(h('div', { class: 'kpis', style: 'grid-template-columns:repeat(3,minmax(0,1fr))' },
+      h('div', { class: 'card kpi' }, h('div', { class: 'kpi-l' }, 'Pedidos enviados'), h('div', { class: 'kpi-v num' }, enviados.length, h('small', null, `de ${ativos.length}`)), h('div', { class: 'kpi-s' }, 'membros ativos com tamanho escolhido')),
+      h('div', { class: 'card kpi' }, h('div', { class: 'kpi-l' }, 'Fotos para o crachá'), h('div', { class: 'kpi-v num' }, comFoto.length, h('small', null, `de ${ativos.length}`)), h('div', { class: 'kpi-s' }, 'fotos 3×4 recebidas')),
+      h('div', { class: 'card kpi' }, h('div', { class: 'kpi-l' }, 'Faltam'), h('div', { class: 'kpi-v num' }, ativos.length - ativos.filter(m => pedidoDe(m.id) && pedidoDe(m.id).tamanho && fotoDe(m.id)).length), h('div', { class: 'kpi-s' }, 'membros sem pedido completo'))));
+    blocos.push(
+      card('Pedidos da liga', 'Clique em um membro para preencher ou corrigir', h('div', null, h('div', { style: 'padding:0 18px 12px' }, acoes),
+        h('div', { class: 'tbl-wrap' }, h('table', { class: 'tbl', style: 'min-width:620px' }, h('thead', null, h('tr', null, ['Foto', 'Nome', 'Categoria', 'Tamanho', 'Modelo', 'Situação'].map(c => h('th', { scope: 'col' }, c)))), tbody))), { flush: true, id: 'pedidos' }),
+      card('Quantidade por tamanho', 'Para o pedido à confecção', h('div', { class: 'tbl-wrap', style: 'max-width:560px' }, resumo), { id: 'quantidades' }));
+  }
+  return h('div', { class: 'page' }, pageHead('Produtos LAORTT', 'Camisa e crachá', null), ...blocos);
+}
+
+const VIEWS = { eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
 
 /* ================= gaveta e modal ================= */
 let focoAntes = null;
