@@ -536,6 +536,29 @@ a.btn{text-decoration:none}
   .cal2-livre{position:static;font-size:9px}
 }
 
+
+/* ---------- presença por QR code ---------- */
+.pq{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.pq-card{padding:22px;display:flex;flex-direction:column;gap:14px;border-top:3px solid var(--gold)}
+.pq-campo{font-family:var(--f-display);font-size:28px;line-height:1.15}
+.pq-etapas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pq-etapa{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface-2)}
+.pq-etapa.ok{border-color:var(--good);background:var(--good-wash)}
+.pq-etapa b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pq-etapa span{font-family:var(--f-display);font-size:24px}
+.pq-etapa small{display:block;font-size:12.5px;color:var(--ink-2)}
+.pq .btn-big{padding:14px 20px;font-size:16.5px;width:100%}
+.pq-msg{border-radius:9px;padding:12px 14px;font-size:14.5px}
+.pq-msg.ok{background:var(--good-wash);color:var(--ink)}
+.pq-msg.bad{background:var(--bad-wash);color:var(--ink)}
+.pq-msg.warn{background:var(--warn-wash);color:var(--ink)}
+.reg{font-size:12px;color:var(--ink-2);display:block;margin-top:2px}
+.reg.ok{color:var(--good)}
+.reg.inc{color:var(--warn)}
+.reg.fora{color:var(--bad)}
+.qr-prev{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.qr-prev svg{width:132px;height:132px;background:#fff;border-radius:8px;border:1px solid var(--line);flex:none}
+
 /* ---------- responsive ---------- */
 @media (max-width:1100px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -697,6 +720,13 @@ a.btn{text-decoration:none}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+/* Gerador de QR code: qrcode-generator 1.4.4 (MIT), embutido. */
+// Copyright (c) 2009 Kazuhiko Arase
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
+<script>
 /* =====================================================================
    CONFIGURAÇÃO — cole aqui o firebaseConfig do seu projeto (passo 5 do LEIAME).
    Estes dados não são senha: quem protege o banco é o arquivo firestore.rules.
@@ -846,7 +876,7 @@ const S = {
   authUser: null, email: null, meuAcesso: null, acessoCarregado: true,
   instalado: null, semRegras: false,
   semDb: false, semConfig: false, lento: false, somenteLeitura: false,
-  checkins: new Map(),
+  checkins: new Map(), registros: new Map(), camposQr: new Map(), pq: null,
   eventos: new Map(), produtos: new Map(), fotos: new Map(), fEv: 'proximos', rascunhos: {}, gavetaPedido: null,
   membros: new Map(), atividades: new Map(), atRaw: new Map(), presRaw: new Map(), campos: new Map(), restrito: new Map(), acessos: new Map(),
   configRaw: null, config: mergeConfig(null),
@@ -908,6 +938,7 @@ function esperados(a) {
   const mapa = new Map();
   if (a.tipo === 'pratica') {
     for (const id of a.escalados || []) { const m = S.membros.get(id); if (m) mapa.set(id, m); }
+    if (a.id) for (const reg of S.registros.values()) if (reg.atividadeId === a.id) { const m = S.membros.get(reg.membroId); if (m) mapa.set(m.id, m); }
     if (a.id) for (const x of listaDe(a).itens) if (x.estado !== 'espera') { const m = S.membros.get(x.membroId); if (m) mapa.set(m.id, m); }
   } else if (Number(a.vagas) > 0) {
     for (const x of listaDe(a).itens) if (x.estado !== 'espera') { const m = S.membros.get(x.membroId); if (m) mapa.set(m.id, m); }
@@ -943,6 +974,10 @@ function calcStats() {
     s.freqAulas = taxa(s.aP, s.aF, s.aJ);
     s.freqPraticas = taxa(s.pP, s.pF, s.pJ);
     s.futuras.sort(ordenarAt);
+  }
+  for (const reg of S.registros.values()) {
+    const s = r.get(reg.membroId), a = S.atividades.get(reg.atividadeId);
+    if (s && a && a.status !== 'cancelada') s.minQR = (s.minQR || 0) + minutosRegistro(reg, a);
   }
   return r;
 }
@@ -1007,7 +1042,7 @@ function carimbo(obj, novo) {
 }
 function mapaDe(snap) {
   const m = new Map();
-  snap.forEach(d => { const v = d.data(); if (v && typeof v === 'object') m.set(d.id, { ...v, id: d.id }); });
+  snap.forEach(d => { const v = d.data({ serverTimestamps: 'estimate' }); if (v && typeof v === 'object') m.set(d.id, { ...v, id: d.id }); });
   return m;
 }
 function ouvir(ref, aoMudar, aoErro) {
@@ -1033,7 +1068,7 @@ function pararPrivados() {
   S.privSubs = []; chavePriv = '';
   S.presRaw = new Map(); S.restrito = new Map(); S.acessos = new Map();
   S.membros = new Map(); S.atRaw = new Map(); S.campos = new Map();
-  S.eventos = new Map(); S.produtos = new Map(); S.fotos = new Map(); S.rascunhos = {}; S.checkins = new Map();
+  S.eventos = new Map(); S.produtos = new Map(); S.fotos = new Map(); S.rascunhos = {}; S.checkins = new Map(); S.registros = new Map(); S.camposQr = new Map();
   S.loaded.membros = S.loaded.atividades = S.loaded.campos = false; S.lento = false;
   clearTimeout(S.timerLento);
   mesclar();
@@ -1044,7 +1079,9 @@ function assinarPrivados() {
   const verRestrito = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].membros);
   const gestorProd = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].produtos);
   const mid = (S.meuAcesso && S.meuAcesso.membroId) || '';
-  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}`;
+  const vePres = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].presencas);
+  const veCampos = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].campos);
+  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}|${vePres}|${veCampos}`;
   migrarConfig(r);
   if (chave === chavePriv) return;
   pararPrivados(); chavePriv = chave;
@@ -1062,6 +1099,9 @@ function assinarPrivados() {
     S.privSubs.push(ouvir(S.db.doc('produtos/' + mid), d => { S.produtos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
     S.privSubs.push(ouvir(S.db.doc('fotos/' + mid), d => { S.fotos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
   }
+  if (vePres) S.privSubs.push(ouvir(S.db.collection('registros').where('data', '>=', addDias(hoje(), -365)), s => { S.registros = mapaDe(s); agendar(); }));
+  else if (mid) S.privSubs.push(ouvir(S.db.collection('registros').where('membroId', '==', mid), s => { S.registros = mapaDe(s); agendar(); }));
+  if (veCampos) S.privSubs.push(ouvir(S.db.collection('camposQr'), s => { S.camposQr = mapaDe(s); agendar(); }));
   S.privSubs.push(ouvir(S.db.collection('presencas'), snap => { S.presRaw = mapaDe(snap); mesclar(); agendar(); }));
   if (verRestrito) S.privSubs.push(ouvir(S.db.collection('restrito'), snap => { S.restrito = mapaDe(snap); agendar(); }));
   if (r === 'presidencia') S.privSubs.push(ouvir(S.db.collection('acesso'), snap => { S.acessos = mapaDe(snap); agendar(); }));
@@ -1244,6 +1284,11 @@ function agendar() { if (pendente) return; pendente = true; requestAnimationFram
 const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'membros', 'produtos', 'acesso'];
 function lerRota() {
   const r = location.hash.slice(1);
+  const pqm = r.match(/^presenca\/([^/]+)\/([^/]+)$/);
+  if (pqm) {
+    if (!S.pq || S.pq.campo !== pqm[1] || S.pq.token !== pqm[2]) S.pq = { campo: decodeURIComponent(pqm[1]), token: decodeURIComponent(pqm[2]), msg: null, ocupado: false };
+    S.view = 'presenca'; return;
+  }
   S.view = ROTAS.includes(r) ? r : (r ? 'painel' : 'inicio');
   if (S.view === 'acesso' && !vePermissoes()) S.view = 'painel';
 }
@@ -1326,6 +1371,11 @@ function renderLanding() {
   let nota = '';
   if (S.semConfig) {
     nota = 'Falta conectar o Firebase (passo 5 do LEIAME).';
+  } else if (!S.authUser && S.view === 'presenca') {
+    top.push(btn('Entrar', entrarMembro, { kind: 'gold', sm: true, icon: 'user' }));
+    hero.push(btn('Entrar para registrar presença', entrarMembro, { kind: 'gold', icon: 'pin', id: 'l-entrar-qr' }), h('span', { class: 'l-note', style: 'flex-basis:100%' }, 'Você leu o QR code de um campo de prática. Entre com a conta Google liberada pela liga para registrar sua presença.'));
+    cta.push(btn('Entrar com Google', entrarMembro, { kind: 'gold', icon: 'user', id: 'l-entrar' }));
+    nota = 'Área restrita aos membros da liga com e-mail liberado pela presidência.';
   } else if (!S.authUser) {
     top.push(btn('Área dos membros', entrarMembro, { kind: 'gold', sm: true, icon: 'user' }));
     hero.push(btn('Área dos membros', entrarMembro, { kind: 'ghost', icon: 'user' }));
@@ -1469,7 +1519,7 @@ function minhaParticipacao() {
   return card('Minha participação', S.membros.get(id).categoria === 'pleno' ? 'Membro Pleno' : 'Membro Júnior', h('div', null, topo,
     h('div', { class: 'statgrid' },
       h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, st.freqAulas == null ? '—' : st.freqAulas + '%'), h('div', { class: 'stat-l' }, papelAtual() === 'publico' ? 'entre para ver a frequência' : 'frequência nas aulas')),
-      h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, st.pP), h('div', { class: 'stat-l' }, 'práticas realizadas')),
+      h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, st.pP), h('div', { class: 'stat-l' }, st.minQR ? `práticas · ${fmtHoras(st.minQR)} por QR` : 'práticas realizadas')),
       h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, st.futuras.length), h('div', { class: 'stat-l' }, 'escalas futuras'))),
     sit === 'abaixo' ? h('div', { class: 'note', style: 'margin-top:10px;border-color:var(--bad);' }, `Sua frequência está abaixo do mínimo de ${S.config.regras.freqMinima}%.`) : null,
     futuras.length ? h('div', { class: 'hist', style: 'margin-top:12px' }, futuras.map(a => h('button', { type: 'button', class: 'hist-i', onclick: () => gavetaAtividade(a.id) },
@@ -2176,7 +2226,184 @@ function cardMeusCheckins() {
     { flush: true, id: 'meus-checkins' });
 }
 
-const VIEWS = { eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
+/* ================= presença por QR code + localização ================= */
+/* O QR impresso em cada campo abre .../#presenca/<campo>/<código>. O membro registra a entrada no início
+   e a saída no fim. O painel confere a distância até o campo; o banco confere o código, a janela de
+   horário (pelo relógio do servidor) e se o registro é da própria pessoa. */
+const TOL_PADRAO = 30, RAIO_PADRAO = 200;
+const tsDate = x => !x ? null : x.toDate ? x.toDate() : new Date(x);
+const hhmm = d => d ? d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
+function momentoDe(iso, hm) { if (!validISO(iso) || !/^\d{2}:\d{2}$/.test(hm || '')) return null; const [y, mo, d] = iso.split('-').map(Number); const [hh, mm] = hm.split(':').map(Number); return new Date(y, mo - 1, d, hh, mm); }
+function janela(a, etapa) {
+  const c = S.campos.get(a.campoId) || {};
+  const tol = Number(c.tolerancia) || TOL_PADRAO;
+  const marco = momentoDe(a.data, etapa === 'entrada' ? a.inicio : a.fim);
+  if (!marco) return null;
+  return { de: new Date(marco.getTime() - tol * 60000), ate: new Date(marco.getTime() + tol * 60000), marco };
+}
+function distanciaM(lat1, lng1, lat2, lng2) {
+  const R = 6371000, rad = x => x * Math.PI / 180;
+  const dLat = rad(lat2 - lat1), dLng = rad(lng2 - lng1);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return Math.round(2 * R * Math.asin(Math.sqrt(s)));
+}
+const fmtDist = m => m >= 1000 ? (m / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' km' : m + ' m';
+const registroDe = (aid, mid) => S.registros.get(`${aid}_${mid}`) || null;
+function minutosRegistro(r, a) {
+  if (!r || !r.entrada || !r.saida) return 0;
+  const e = tsDate(r.entrada.em), s = tsDate(r.saida.em);
+  const ini = momentoDe(a.data, a.inicio), fim = momentoDe(a.data, a.fim);
+  if (!e || !s) return 0;
+  const de = ini && e < ini ? ini : e, ate = fim && s > fim ? fim : s;
+  return Math.max(0, Math.round((ate - de) / 60000));
+}
+const fmtHoras = min => { if (min < 60) return `${min} min`; const h2 = Math.floor(min / 60), m = min % 60; return `${h2}h${m ? String(m).padStart(2, '0') : ''}`; };
+function textoRegistro(r, a) {
+  if (!r || !r.entrada) return null;
+  const e = r.entrada, s = r.saida;
+  if (s) return h('span', { class: 'reg ok' }, `QR: entrada ${hhmm(tsDate(e.em))} · saída ${hhmm(tsDate(s.em))} · ${fmtHoras(minutosRegistro(r, a))}`);
+  return h('span', { class: 'reg inc' }, `QR: entrada ${hhmm(tsDate(e.em))} (${fmtDist(e.dist)}) · sem saída`);
+}
+function localizar() {
+  return new Promise((res, rej) => {
+    if (!navigator.geolocation) { rej({ code: 'sem-gps' }); return; }
+    navigator.geolocation.getCurrentPosition(p => res(p.coords), e => rej({ code: e.code === 1 ? 'negado' : e.code === 3 ? 'tempo' : 'indisponivel' }), { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+  });
+}
+const ERRO_GPS = {
+  negado: 'O navegador bloqueou a localização. Libere a localização para este site (ícone de cadeado ao lado do endereço, ou Ajustes › Safari/Chrome › Localização) e tente de novo.',
+  tempo: 'O celular demorou para encontrar sua localização. Vá para perto de uma janela ou área aberta e tente de novo.',
+  indisponivel: 'Não foi possível obter sua localização. Verifique se o GPS do celular está ligado.',
+  'sem-gps': 'Este navegador não informa localização. Use o navegador padrão do celular.'
+};
+async function registrar(a, etapa) {
+  const mid = meuMembroId(); const c = S.campos.get(a.campoId) || {};
+  S.pq = { ...S.pq, ocupado: true, msg: null }; agendar();
+  const fim = (msg, tipo) => { S.pq = { ...S.pq, ocupado: false, msg: { texto: msg, tipo } }; agendar(); };
+  const j = janela(a, etapa), agora = new Date();
+  if (!j) return fim('Esta prática não tem horário de início e fim cadastrado. Peça à direção de práticas para completar.', 'bad');
+  if (agora < j.de || agora > j.ate) return fim(`A ${etapa} desta prática vale das ${hhmm(j.de)} às ${hhmm(j.ate)}.`, 'warn');
+  if (typeof c.lat !== 'number' || typeof c.lng !== 'number') return fim('Este campo ainda não tem localização cadastrada. Avise a direção de práticas.', 'bad');
+  let pos;
+  try { pos = await localizar(); } catch (e) { return fim(ERRO_GPS[e.code] || ERRO_GPS.indisponivel, 'bad'); }
+  const dist = distanciaM(pos.latitude, pos.longitude, c.lat, c.lng);
+  const prec = Math.round(pos.accuracy || 0);
+  const raio = Number(c.raio) || RAIO_PADRAO;
+  if (dist > raio + Math.min(prec, 150)) return fim(`Você está a ${fmtDist(dist)} de ${c.nome}. O registro só vale dentro de ${raio} m do local${prec > 50 ? ` (precisão do GPS agora: ${prec} m)` : ''}.`, 'bad');
+  const dado = { em: firebase.firestore.FieldValue.serverTimestamp(), local: agora.toISOString(), dist, prec, token: S.pq.token };
+  const ref = S.db.doc(`registros/${a.id}_${mid}`);
+  try {
+    if (etapa === 'entrada') await ref.set({ atividadeId: a.id, campoId: a.campoId, membroId: mid, data: a.data, entrada: dado });
+    else await ref.update({ saida: dado });
+    fim(etapa === 'entrada' ? `Entrada registrada às ${hhmm(agora)}. Você estava a ${fmtDist(dist)} do local. Leia o QR de novo no fim da prática para registrar a saída.` : `Saída registrada às ${hhmm(agora)}. Bom trabalho!`, 'ok');
+  } catch (e) {
+    fim(e && e.code === 'permission-denied' ? 'O registro foi recusado. O QR code pode estar desatualizado ou o horário já passou; fale com a direção de práticas.' : 'Falha ao registrar. Verifique a internet e tente de novo.', 'bad');
+  }
+}
+function vPresenca() {
+  const pq = S.pq || {};
+  const c = S.campos.get(pq.campo);
+  const mid = meuMembroId();
+  const corpo = [];
+  const wrap = (...x) => h('div', { class: 'page' }, h('div', { class: 'pq' }, ...x));
+  if (!c) return wrap(h('section', { class: 'card pq-card' }, h('div', { class: 'pq-msg bad' }, 'Este QR code não corresponde a nenhum campo de prática cadastrado.')));
+  const t = hoje();
+  const doDia = atividadesOrdenadas().filter(a => a.tipo === 'pratica' && a.campoId === c.id && a.data === t && a.status !== 'cancelada');
+  corpo.push(h('div', null, h('div', { class: 'eyebrow' }, 'Presença por QR code'), h('div', { class: 'pq-campo' }, c.nome), h('div', { class: 'card-s' }, [c.local, fmt(t, { weekday: 'long', day: 'numeric', month: 'long' })].filter(Boolean).join(' · '))));
+  if (!mid) corpo.push(h('div', { class: 'pq-msg bad' }, 'Seu e-mail não está vinculado ao seu nome na lista de membros. Peça à presidência para fazer o vínculo em Permissões.'));
+  else if (!doDia.length) corpo.push(h('div', { class: 'pq-msg warn' }, 'Não há prática deste campo cadastrada para hoje.'));
+  else {
+    const agora = new Date();
+    // escolhe a prática cuja janela está aberta (ou a próxima) quando há mais de um turno no dia
+    const a = doDia.find(x => { const je = janela(x, 'entrada'), js = janela(x, 'saida'); return (je && agora >= je.de && agora <= je.ate) || (js && agora >= js.de && agora <= js.ate); })
+      || doDia.find(x => { const js = janela(x, 'saida'); return js && agora <= js.ate; }) || doDia[doDia.length - 1];
+    const r = registroDe(a.id, mid);
+    const je = janela(a, 'entrada'), js = janela(a, 'saida');
+    const naLista = listaDe(a).itens.some(x => x.membroId === mid);
+    corpo.push(h('div', { class: 'card-s' }, `Prática das ${horario(a)}${a.responsavel ? ' · Preceptor: ' + a.responsavel : ''}`));
+    corpo.push(h('div', { class: 'pq-etapas' },
+      h('div', { class: 'pq-etapa' + (r && r.entrada ? ' ok' : '') }, h('b', null, 'Entrada'), h('span', null, r && r.entrada ? hhmm(tsDate(r.entrada.em) || new Date(r.entrada.local)) : '—'), h('small', null, je ? `vale das ${hhmm(je.de)} às ${hhmm(je.ate)}` : 'sem horário')),
+      h('div', { class: 'pq-etapa' + (r && r.saida ? ' ok' : '') }, h('b', null, 'Saída'), h('span', null, r && r.saida ? hhmm(tsDate(r.saida.em) || new Date(r.saida.local)) : '—'), h('small', null, js ? `vale das ${hhmm(js.de)} às ${hhmm(js.ate)}` : 'sem horário'))));
+    if (!naLista) corpo.push(h('div', { class: 'pq-msg warn' }, 'Seu nome não está na lista deste horário. O registro será feito, mas a direção de práticas vai conferir.'));
+    if (pq.msg) corpo.push(h('div', { class: 'pq-msg ' + pq.msg.tipo, role: 'status' }, pq.msg.texto));
+    const etapa = !r || !r.entrada ? 'entrada' : !r.saida ? 'saida' : null;
+    if (etapa) corpo.push(h('button', { type: 'button', class: 'btn btn-primary btn-big', id: 'pq-registrar', disabled: !!pq.ocupado, onclick: () => registrar(a, etapa) },
+      ic(pq.ocupado ? 'clock' : 'pin', 18), h('span', null, pq.ocupado ? 'Conferindo sua localização…' : etapa === 'entrada' ? 'Registrar entrada' : 'Registrar saída')));
+    else corpo.push(h('div', { class: 'pq-msg ok' }, `Presença completa nesta prática: ${fmtHoras(minutosRegistro(r, a))} registradas.`));
+  }
+  corpo.push(h('div', { class: 'fld-h' }, 'Sua localização é usada só no momento do registro, para conferir a distância até o campo. O painel guarda apenas a distância e a precisão do GPS, não o seu endereço.'));
+  return wrap(h('section', { class: 'card pq-card', id: 'presenca-qr' }, corpo), h('div', null, btn('Ir para a agenda', () => { location.hash = 'agenda'; }, { kind: 'text', icon: 'cal' })));
+}
+/* ---------- cadastro do campo: localização, raio, tolerância e QR ---------- */
+function urlQr(cid, token) { return `${location.origin}${location.pathname}#presenca/${cid}/${token}`; }
+function svgQr(texto, cell = 6) { const q = qrcode(0, 'M'); q.addData(texto); q.make(); return q.createSvgTag({ cellSize: cell, margin: 2, scalable: true }); }
+const novoToken = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => b.toString(16).padStart(2, '0')).join('');
+function folhaQr(c, token) {
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const logo = $('.seal').getAttribute('src');
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>QR de presença – ${esc(c.nome)}</title>
+<style>@page{size:A4;margin:16mm}body{font-family:Georgia,serif;color:#13224a;text-align:center;margin:0;padding:24px}
+.dica{font-family:system-ui,sans-serif;background:#f5eedd;border:1px solid #d9c08a;padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:18px}
+@media print{.dica{display:none}body{padding:0}}img{width:92px;height:92px;border-radius:50%}
+h1{font-weight:400;letter-spacing:.1em;font-size:22px;margin:10px 0 0}h2{font-weight:400;font-size:30px;margin:18px 0 4px}
+.sub{font-family:system-ui,sans-serif;color:#44506a;font-size:15px}.qr{width:118mm;height:118mm;margin:22px auto 10px;padding:6mm;border:3px solid #c9a55c;border-radius:14px}
+.qr svg{width:100%;height:100%}.passos{font-family:system-ui,sans-serif;font-size:15px;line-height:1.6;max-width:150mm;margin:10px auto 0;text-align:left}
+.rule{height:3px;background:#c9a55c;margin:16px auto 2px;max-width:150mm}.rule2{height:1px;background:#d9c08a;max-width:150mm;margin:0 auto}
+small{font-family:system-ui,sans-serif;color:#68728a}</style></head><body>
+<div class="dica">Para imprimir, use Ctrl+P (ou Cmd+P no Mac). Este aviso não sai na impressão.</div>
+<img src="${logo}" alt=""><h1>LAORTT · PRESENÇA</h1><div class="rule"></div><div class="rule2"></div>
+<h2>${esc(c.nome)}</h2><div class="sub">${esc(c.local || '')}</div>
+<div class="qr">${svgQr(urlQr(c.id, token), 8)}</div>
+<ol class="passos"><li>Abra a <b>câmera do celular</b> e aponte para o código.</li><li>Toque no link e entre com sua conta Google da liga.</li><li>Leia no <b>início</b> para registrar a entrada e no <b>fim</b> para registrar a saída.</li></ol>
+<p><small>Válido somente neste local e no horário da prática. Não compartilhe fotos deste código.</small></p></body></html>`;
+}
+function secaoQrCampo(f, cid, ed, redesenhar) {
+  const qrDoc = cid ? S.camposQr.get(cid) : null;
+  const temGeo = typeof f.lat === 'number' && typeof f.lng === 'number';
+  const usarAqui = async () => {
+    try { const p = await localizar(); f.lat = Math.round(p.latitude * 1e6) / 1e6; f.lng = Math.round(p.longitude * 1e6) / 1e6; toast(`Localização capturada (precisão de ${Math.round(p.accuracy)} m). Salve o campo para gravar.`, 'good'); redesenhar(); }
+    catch (e) { toast(ERRO_GPS[e.code] || ERRO_GPS.indisponivel, 'bad'); }
+  };
+  const num = (k, v) => { const n = Number(String(v).replace(',', '.')); f[k] = v === '' || isNaN(n) ? undefined : n; };
+  return h('div', { class: 'sec', id: 'sec-qr' },
+    h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Presença por QR code'), temGeo ? h('span', { class: 'pill s-realizada' }, '✓ Localização definida') : h('span', { class: 'pill s-pendente' }, '! Sem localização')),
+    h('div', { class: 'fld-h' }, 'Fique no local do campo e toque em "Usar minha localização atual", ou cole as coordenadas do Google Maps (clique com o botão direito no mapa e copie os números).'),
+    h('div', { class: 'grid2' },
+      field('Latitude', inp('cp-lat', f.lat ?? '', { disabled: !ed, placeholder: '-9.6498', oninput: e => num('lat', e.target.value) })),
+      field('Longitude', inp('cp-lng', f.lng ?? '', { disabled: !ed, placeholder: '-35.7089', oninput: e => num('lng', e.target.value) })),
+      field('Raio permitido (m)', inp('cp-raio', f.raio ?? RAIO_PADRAO, { type: 'number', min: 50, max: 2000, step: 10, disabled: !ed, oninput: e => num('raio', e.target.value) }), { hint: 'Dentro de prédios o GPS erra; 150 a 300 m costuma funcionar.' }),
+      field('Tolerância (min)', inp('cp-tol', f.tolerancia ?? TOL_PADRAO, { type: 'number', min: 5, max: 120, step: 5, disabled: !ed, oninput: e => num('tolerancia', e.target.value) }), { hint: 'Antes e depois do início (entrada) e do fim (saída).' })),
+    h('div', { class: 'filters' },
+      ed ? btn('Usar minha localização atual', usarAqui, { sm: true, icon: 'pin' }) : null,
+      temGeo ? h('a', { class: 'btn btn-ghost btn-sm', href: `https://www.google.com/maps?q=${f.lat},${f.lng}`, target: '_blank', rel: 'noopener' }, 'Conferir no mapa') : null),
+    cid && qrDoc && qrDoc.token ? h('div', { class: 'qr-prev' },
+      (() => { const d = h('div'); d.innerHTML = svgQr(urlQr(cid, qrDoc.token), 3); return d; })(),
+      h('div', { class: 'sec', style: 'gap:8px' },
+        h('div', { class: 'card-s' }, 'Imprima e fixe este código no campo. Membros leem com a câmera do celular no início e no fim da prática.'),
+        h('div', { class: 'filters' },
+          btn('Baixar para imprimir', () => baixar(`qr-presenca-${slug(f.nome)}.html`, folhaQr({ ...f, id: cid }, qrDoc.token)), { sm: true, icon: 'download', kind: 'primary' }),
+          ed ? botaoTrocarQr(cid) : null)))
+      : h('div', { class: 'card-s' }, cid ? (ed ? 'O QR code é criado quando você salvar o campo.' : 'QR code ainda não criado.') : 'O QR code é criado quando você cadastrar o campo.'));
+}
+function botaoTrocarQr(cid) {
+  const wrap = h('span', { style: 'display:inline-flex;gap:6px' });
+  const normal = () => wrap.replaceChildren(btn('Gerar novo código', () => wrap.replaceChildren(
+    btn('Confirmar: invalidar o QR impresso', async () => { try { await gravar(`camposQr/${cid}`, { token: novoToken(), atualizadoEm: new Date().toISOString() }); toast('Novo QR criado. Imprima e substitua o antigo, que deixou de valer.', 'good'); } catch { /* tratado */ } }, { kind: 'danger', sm: true }),
+    btn('Manter', normal, { sm: true })), { kind: 'text', sm: true, icon: 'shuffle' }));
+  normal();
+  return wrap;
+}
+/* ---------- lista de presença: aplicar registros do QR ---------- */
+function aplicarRegistros(a, f) {
+  let n = 0;
+  for (const r of S.registros.values()) {
+    if (r.atividadeId !== a.id || !r.entrada || !r.saida) continue;
+    if (!f.presencas[r.membroId]) { f.presencas[r.membroId] = 'P'; n++; }
+  }
+  return n;
+}
+
+const VIEWS = { presenca: vPresenca, eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
 
 /* ================= gaveta e modal ================= */
 let focoAntes = null;
@@ -2326,13 +2553,14 @@ function gavetaAtividade(id, preset = {}) {
       corpo.push(h('div', { class: 'sec', id: 'sec-presenca' },
         h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Presença'),
           ep && lista.length ? h('span', { style: 'display:inline-flex;gap:4px' },
+            f.tipo === 'pratica' && orig && [...S.registros.values()].some(x => x.atividadeId === orig.id && x.entrada && x.saida) ? btn('Aplicar registros do QR', () => { const n = aplicarRegistros(orig, f); sujo = true; toast(n ? `${plural(n, 'presença marcada', 'presenças marcadas')} pelos registros completos. Confira e salve.` : 'Os registros completos já estão marcados.', n ? 'good' : ''); desenhar(); }, { sm: true, icon: 'pin', kind: 'gold' }) : null,
             btn('Todos presentes', () => { for (const m of lista) f.presencas[m.id] = 'P'; sujo = true; desenhar(); }, { sm: true, icon: 'check' }),
             btn('Limpar', () => { f.presencas = {}; sujo = true; desenhar(); }, { sm: true, kind: 'text' })) : null),
         h('div', { class: 'pres-sum' }, h('span', null, h('b', null, c.P), ' presentes'), h('span', null, h('b', null, c.F), ' faltas'), h('span', null, h('b', null, c.J), ' justificadas'), h('span', null, h('b', null, lista.length - c.P - c.F - c.J), ' sem registro')),
         lista.length ? h('div', { class: 'plist' }, lista.map(m => {
           const v = f.presencas[m.id];
           return h('div', { class: 'prow' },
-            h('span', { class: 'prow-n' }, m.nome, h('span', { class: 'tag' }, CATEG[m.categoria] || '')),
+            h('span', { class: 'prow-n' }, m.nome, h('span', { class: 'tag' }, CATEG[m.categoria] || ''), f.tipo === 'pratica' && orig ? textoRegistro(registroDe(orig.id, m.id), f) : null),
             h('span', { class: 'pseg', role: 'group', 'aria-label': 'Presença de ' + m.nome },
               ['P', 'F', 'J'].map(k => h('button', { type: 'button', class: k, 'aria-pressed': String(v === k), title: { P: 'Presente', F: 'Falta', J: 'Falta justificada' }[k], disabled: !ep,
                 onclick: () => { if (f.presencas[m.id] === k) delete f.presencas[m.id]; else f.presencas[m.id] = k; sujo = true; desenhar(); } }, k))));
@@ -2445,7 +2673,7 @@ function gavetaMembro(id) {
       corpo.push(h('div', { class: 'sec' }, h('div', { class: 'sec-t' }, 'Participação'),
         h('div', { class: 'statgrid' },
           h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, s.freqAulas == null ? '—' : s.freqAulas + '%'), h('div', { class: 'stat-l' }, `aulas · ${s.aP || 0} P, ${s.aF || 0} F, ${s.aJ || 0} J`)),
-          h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, s.pP || 0), h('div', { class: 'stat-l' }, `práticas realizadas · ${s.pF || 0} falta(s)`)),
+          h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, s.pP || 0), h('div', { class: 'stat-l' }, `práticas · ${s.pF || 0} falta(s)${s.minQR ? ' · ' + fmtHoras(s.minQR) + ' por QR' : ''}`)),
           h('div', { class: 'stat' }, h('div', { class: 'stat-v num' }, (s.futuras || []).length), h('div', { class: 'stat-l' }, 'escalas futuras'))),
         hist.length ? h('div', { class: 'hist' }, hist.slice(0, 30).map(a => {
           const v = a.presencas && a.presencas[id];
@@ -2494,6 +2722,8 @@ function gavetaCampo(id) {
   const f = orig ? clone(orig) : { nome: '', tipo: 'Ambulatório', local: '', preceptor: '', dias: [], inicio: '07:00', fim: '12:00', vagas: 3, publico: 'todos', ativo: true, obs: '' };
   f.dias = f.dias || [];
   const ed = pode('campos');
+  const tokenG = S.gavetaToken;
+  S.redesenhar = { token: tokenG, fn: () => desenhar() };
   function desenhar() {
     const corpo = [h('div', { class: 'sec' }, h('div', { class: 'grid2' },
       field('Nome do campo', inp('cp-nome', f.nome, { disabled: !ed, placeholder: 'Ex.: Ambulatório de Ortopedia – HGE', oninput: e => { f.nome = e.target.value; } }), { wide: true }),
@@ -2509,6 +2739,7 @@ function gavetaCampo(id) {
       field('Público', sel('cp-pub', f.publico || 'todos', Object.entries(PUBLICOS), { disabled: !ed, onchange: e => { f.publico = e.target.value; } }), { wide: true }),
       field('Observações', h('textarea', { id: 'cp-obs', class: 'in', disabled: !ed, oninput: e => { f.obs = e.target.value; } }, f.obs || ''), { wide: true }),
       h('label', { class: 'switch wide' }, h('input', { type: 'checkbox', id: 'cp-ativo', checked: f.ativo !== false, disabled: !ed, onchange: e => { f.ativo = e.target.checked; } }), h('span', null, 'Campo ativo (aparece na geração de dias)'))))];
+    corpo.push(secaoQrCampo(f, orig ? orig.id : null, ed, desenhar));
     const rodape = [
       !novo && ed ? botaoExcluir('Excluir', excluir) : null,
       h('span', { class: 'sp' }),
@@ -2522,8 +2753,19 @@ function gavetaCampo(id) {
     if (!f.dias.length) { toast('Marque ao menos um dia da semana.', 'warn'); return; }
     const cid = orig ? orig.id : slug(nome) + '-' + Math.random().toString(36).slice(2, 6);
     const doc = { nome, tipo: f.tipo, local: String(f.local || '').trim(), preceptor: String(f.preceptor || '').trim(), dias: f.dias, inicio: f.inicio || '', fim: f.fim || '', vagas: Number(f.vagas) || 0, publico: f.publico || 'todos', ativo: f.ativo !== false, obs: String(f.obs || ''), criadoEm: orig ? orig.criadoEm || null : null };
+    if (f.lat != null || f.lng != null) {
+      if (typeof f.lat !== 'number' || typeof f.lng !== 'number' || Math.abs(f.lat) > 90 || Math.abs(f.lng) > 180) { toast('Latitude ou longitude inválida. Use números como -9.6498 e -35.7089.', 'warn'); return; }
+      doc.lat = f.lat; doc.lng = f.lng;
+    }
+    doc.raio = Math.min(2000, Math.max(50, Number(f.raio) || RAIO_PADRAO));
+    doc.tolerancia = Math.min(120, Math.max(5, Number(f.tolerancia) || TOL_PADRAO));
     carimbo(doc, novo);
-    try { await gravar(`campos/${cid}`, doc); toast(novo ? 'Campo cadastrado. Agora você pode gerar os dias de prática.' : 'Campo atualizado.', 'good'); fecharGaveta(); } catch { /* tratado */ }
+    try {
+      await gravar(`campos/${cid}`, doc);
+      if (!S.camposQr.has(cid)) await gravar(`camposQr/${cid}`, { token: novoToken(), atualizadoEm: new Date().toISOString() });
+      toast(novo ? 'Campo cadastrado com QR code de presença. Agora você pode gerar os dias de prática.' : 'Campo atualizado.', 'good');
+      if (novo) fecharGaveta(); else desenhar();
+    } catch { /* tratado */ }
   }
   async function excluir() {
     try { await gravar(`campos/${id}`, null, { apagar: true }); toast('Campo excluído. Os dias de prática já criados foram mantidos.'); fecharGaveta(); } catch { /* tratado */ }
@@ -2605,10 +2847,10 @@ function baixar(nome, dados) {
   } catch { toast('Não foi possível gerar o arquivo neste navegador.', 'bad'); }
 }
 function exportarFrequencia() {
-  const rows = [['Nome', 'Categoria', 'Período', 'Cargo', 'Situação', 'Aulas: presenças', 'Aulas: faltas', 'Aulas: justificadas', 'Frequência nas aulas (%)', 'Práticas: presenças', 'Práticas: faltas', 'Práticas: justificadas', 'Escalas (total)', 'Escalas futuras']];
+  const rows = [['Nome', 'Categoria', 'Período', 'Cargo', 'Situação', 'Aulas: presenças', 'Aulas: faltas', 'Aulas: justificadas', 'Frequência nas aulas (%)', 'Práticas: presenças', 'Práticas: faltas', 'Práticas: justificadas', 'Escalas (total)', 'Escalas futuras', 'Horas de prática (QR)']];
   for (const m of [...S.membros.values()].sort(porNome)) {
     const s = S.stats.get(m.id) || {};
-    rows.push([m.nome, CATEG[m.categoria] || '', m.periodo || '', m.cargo || '', m.status === 'inativo' ? 'Inativo' : 'Ativo', s.aP || 0, s.aF || 0, s.aJ || 0, s.freqAulas ?? '', s.pP || 0, s.pF || 0, s.pJ || 0, s.escalas || 0, (s.futuras || []).length]);
+    rows.push([m.nome, CATEG[m.categoria] || '', m.periodo || '', m.cargo || '', m.status === 'inativo' ? 'Inativo' : 'Ativo', s.aP || 0, s.aF || 0, s.aJ || 0, s.freqAulas ?? '', s.pP || 0, s.pF || 0, s.pJ || 0, s.escalas || 0, (s.futuras || []).length, s.minQR ? (s.minQR / 60).toFixed(1).replace('.', ',') : '0']);
   }
   baixar(`laortt-frequencia-${hoje()}.csv`, csv(rows));
 }
