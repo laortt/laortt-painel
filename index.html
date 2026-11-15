@@ -488,6 +488,54 @@ a.btn{text-decoration:none}
 .prio{font-size:11px;font-weight:700;color:var(--gold-ink);background:var(--gold-wash);border:1px solid var(--gold-line);border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:middle}
 @media (max-width:640px){ .ck-row{grid-template-columns:50px minmax(0,1fr);padding:11px 14px} .ck-side{grid-column:2;align-items:flex-start} .ck-acts{justify-content:flex-start} }
 
+
+/* ---------- calendário ---------- */
+.cal2-dica{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);padding:0 16px 12px}
+.cal2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line)}
+.cal2-dow{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:9px 10px 7px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.cal2-dow .sm{display:none}
+.cal2-d{position:relative;min-height:118px;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);padding:8px;display:flex;flex-direction:column;gap:5px;text-align:left;cursor:pointer;min-width:0;font:inherit;color:inherit}
+.cal2-d:nth-child(7n){border-right:0}
+.cal2-d:hover{background:var(--surface-2)}
+.cal2-d:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;border-radius:0}
+.cal2-d.out{background:var(--surface-2)}
+.cal2-d.out .cal2-n,.cal2-d.past .cal2-n{color:var(--muted)}
+.cal2-d.past .cal2-evs{opacity:.7}
+.cal2-top{display:flex;align-items:center;justify-content:space-between}
+.cal2-n{font-family:var(--f-display);font-size:20px;line-height:1;width:32px;height:32px;display:grid;place-items:center;border-radius:50%}
+.cal2-d.today .cal2-n{background:var(--brand);color:var(--on-brand)}
+.cal2-eu{width:20px;height:20px;border-radius:50%;background:var(--good);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center}
+.cal2-evs{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cal2-ev{display:block;font-size:11.5px;line-height:1.35;padding:2px 6px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal2-ev b{font-weight:700}
+.cal2-ev.t-pratica{background:var(--gold-wash);color:var(--gold-ink);box-shadow:inset 3px 0 0 var(--gold)}
+.cal2-ev.t-aula{background:var(--brand);color:var(--on-brand)}
+.cal2-ev.t-evento{background:var(--surface);color:var(--brand-ink);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
+.cal2-more{font-size:11.5px;color:var(--muted);padding-left:4px}
+.cal2-dots{display:none;gap:3px;justify-content:center}
+.cal2-livre{position:absolute;right:8px;bottom:6px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--good)}
+.slots{display:flex;flex-direction:column;gap:14px}
+.slot{border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:8px;background:var(--surface);border-left:4px solid var(--gold)}
+.slot.k-aula{border-left-color:var(--brand)}
+.slot.k-evento{border-left-color:var(--brand-ink);border-left-style:double}
+.slot-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.slot-hora{display:flex;gap:6px;align-items:center;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.slot-t{font-family:var(--f-display);font-size:21px;line-height:1.2}
+.slot-m{font-size:13px;color:var(--ink-2)}
+.slot-v{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.slot-eu{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0 2px}
+@media (max-width:640px){
+  .cal2-dow{padding:7px 2px;text-align:center;font-size:11px}
+  .cal2-dow .lg{display:none} .cal2-dow .sm{display:inline}
+  .cal2-d{min-height:64px;padding:4px;align-items:center}
+  .cal2-top{justify-content:center;position:relative;width:100%}
+  .cal2-eu{position:absolute;right:-2px;top:-2px;width:14px;height:14px;font-size:9px}
+  .cal2-n{font-size:16px;width:28px;height:28px}
+  .cal2-evs{display:none}
+  .cal2-dots{display:flex}
+  .cal2-livre{position:static;font-size:9px}
+}
+
 /* ---------- responsive ---------- */
 @media (max-width:1100px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -755,15 +803,17 @@ const MODULOS = [
   ['campos', 'Campos de prática', 'Cadastrar campos e gerar dias'],
   ['membros', 'Membros', 'Cadastro e dados de contato'],
   ['eventos', 'Eventos científicos', 'Cadastrar e editar eventos'],
-  ['produtos', 'Produtos LAORTT', 'Ver e editar os pedidos de todos os membros']
+  ['produtos', 'Produtos LAORTT', 'Ver e editar os pedidos de todos os membros'],
+  ['checkins', 'Check-ins', 'Confirmar, remover e reorganizar os nomes que os membros colocam na agenda']
 ];
-const PAPEIS = ['presidencia', 'diretoria', 'coordenacao', 'membro'];
+const PAPEIS = ['presidencia', 'diretoria', 'diretorPraticas', 'coordenacao', 'membro'];
 const CONFIG_PADRAO = {
   papeis: {
-    presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true, eventos: true, produtos: true },
-    diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false, eventos: true, produtos: true },
-    coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false, eventos: false, produtos: false },
-    membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false }
+    presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true, eventos: true, produtos: true, checkins: true },
+    diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false, eventos: true, produtos: true, checkins: false },
+    diretorPraticas: { nome: 'Diretoria de práticas', aulas: false, praticas: true, presencas: true, campos: true, membros: false, eventos: false, produtos: false, checkins: true },
+    coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false, eventos: false, produtos: false, checkins: false },
+    membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false, checkins: false }
   },
   exibicao: { frequenciaDeTodos: true },
   regras: { freqMinima: 75, justificadaAbona: true },
@@ -858,8 +908,9 @@ function esperados(a) {
   const mapa = new Map();
   if (a.tipo === 'pratica') {
     for (const id of a.escalados || []) { const m = S.membros.get(id); if (m) mapa.set(id, m); }
+    if (a.id) for (const x of listaDe(a).itens) if (x.estado !== 'espera') { const m = S.membros.get(x.membroId); if (m) mapa.set(m.id, m); }
   } else if (Number(a.vagas) > 0) {
-    for (const c of checkinsDe(a.id)) if (c.status === 'confirmado') { const m = S.membros.get(c.membroId); if (m) mapa.set(m.id, m); }
+    for (const x of listaDe(a).itens) if (x.estado !== 'espera') { const m = S.membros.get(x.membroId); if (m) mapa.set(m.id, m); }
   } else {
     for (const m of membrosAtivos()) if (publicoInclui(a.publico, m.categoria)) mapa.set(m.id, m);
   }
@@ -931,14 +982,14 @@ function sugerirEscala({ data, vagas, publico, ja = [], carga, ocupados }) {
 
 /* ================= banco (Firebase) ================= */
 const filas = new Map();
-function gravar(path, data, { apagar = false, atualizar = false } = {}) {
+function gravar(path, data, { apagar = false, atualizar = false, negado = '' } = {}) {
   if (!S.db) return Promise.reject({ code: 'unavailable' });
   const anterior = filas.get(path) || Promise.resolve();
   const corpo = apagar ? null : JSON.parse(JSON.stringify(data));
   const exec = () => { const ref = S.db.doc(path); return apagar ? ref.delete() : atualizar ? ref.update(corpo) : ref.set(corpo); };
   const p = anterior.catch(() => {}).then(exec);
   filas.set(path, p);
-  return p.catch(e => { tratarErro(e); throw e; });
+  return p.catch(e => { if (negado && e && e.code === 'permission-denied') toast(negado, 'bad'); else tratarErro(e); throw e; });
 }
 function tratarErro(e) {
   const code = e && e.code;
@@ -972,7 +1023,7 @@ function migrarConfig(r) {
   // painéis configurados antes das abas novas: grava as permissões padrão de Eventos e Produtos uma única vez
   if (migrado || r !== 'presidencia' || !S.configRaw || !S.configRaw.papeis) return;
   const d = S.configRaw.papeis.diretoria || {};
-  if ('eventos' in d && 'produtos' in d) return;
+  if ('eventos' in d && 'produtos' in d && 'checkins' in d && S.configRaw.papeis.diretorPraticas) return;
   migrado = true;
   const novo = clone({ papeis: S.config.papeis, exibicao: S.config.exibicao, regras: S.config.regras, produtos: S.config.produtos, atualizadoEm: new Date().toISOString() });
   gravar('config/papeis', novo).catch(() => { migrado = false; });
@@ -1003,7 +1054,7 @@ function assinarPrivados() {
   S.privSubs.push(ouvir(S.db.collection('campos'), s => { S.campos = mapaDe(s); S.loaded.campos = true; agendar(); }, e => { negado(e); S.loaded.campos = true; }));
   S.timerLento = setTimeout(() => { if (!(S.loaded.membros && S.loaded.atividades)) { S.lento = true; agendar(); } }, 10000);
   S.privSubs.push(ouvir(S.db.collection('eventos'), s => { S.eventos = mapaDe(s); agendar(); }));
-  S.privSubs.push(ouvir(S.db.collection('checkins').where('data', '>=', addDias(hoje(), -45)), s => { S.checkins = mapaDe(s); agendar(); }));
+  S.privSubs.push(ouvir(S.db.collection('checkins').where('data', '>=', addDias(hoje(), -45)), s => { S.checkins = mapaDe(s); S.ckNegado = false; agendar(); }, e => { if (e && e.code === 'permission-denied') S.ckNegado = true; }));
   if (gestorProd) {
     S.privSubs.push(ouvir(S.db.collection('produtos'), s => { S.produtos = mapaDe(s); agendar(); }));
     S.privSubs.push(ouvir(S.db.collection('fotos'), s => { S.fotos = mapaDe(s); agendar(); }));
@@ -1199,6 +1250,7 @@ function lerRota() {
 window.addEventListener('hashchange', () => { lerRota(); render(); window.scrollTo(0, 0); });
 
 function render() {
+  setTimeout(() => { const r = S.redesenhar; if (r && S.gavetaToken === r.token && $('#drawer').classList.contains('open')) r.fn(); }, 0);
   if (S.view === 'acesso' && !vePermissoes() && S.meuAcesso) S.view = 'painel';
   const autorizado = !!S.previa || !!(S.meuAcesso && PAPEIS.includes(S.meuAcesso.papel));
   const inicio = S.view === 'inicio' || !autorizado;
@@ -1253,6 +1305,7 @@ function renderBanners() {
   const b = [];
   if (S.semConfig) b.push(h('div', { class: 'banner warn' }, ic('alert'), h('span', { class: 'grow' }, h('b', null, 'Falta conectar o Firebase. '), 'Cole os dados do seu projeto no início do arquivo index.html (passo 5 do LEIAME). Sem isso o painel não carrega nem salva dados.')));
   if (S.semRegras) b.push(h('div', { class: 'banner bad' }, ic('shield'), h('span', { class: 'grow' }, h('b', null, 'O banco recusou a leitura. '), 'Publique o conteúdo do arquivo firestore.rules na aba Regras do Firestore (passo 3 do LEIAME).')));
+  if (S.ckNegado && !S.previa) b.push(h('div', { class: 'banner bad' }, ic('shield'), h('span', { class: 'grow' }, h('b', null, 'O banco ainda não aceita check-in. '), 'Publique o arquivo firestore.rules mais recente em Firestore Database › Regras › Publicar e recarregue a página.')));
   if (S.lento && !(S.loaded.membros && S.loaded.atividades)) b.push(h('div', { class: 'banner warn' }, ic('clock'), h('span', { class: 'grow' }, 'Os dados ainda não chegaram. Verifique sua conexão; o painel atualiza sozinho quando ela voltar.')));
   if (S.db && S.instalado === false && !S.semRegras) {
     if (S.authUser) b.push(h('div', { class: 'banner gold' }, ic('shield'), h('span', { class: 'grow' }, h('b', null, 'Primeira configuração. '), 'A conta ', h('b', null, S.email), ' será a presidência do painel e poderá liberar o acesso dos demais. Faça isso antes de divulgar o endereço.'),
@@ -1433,65 +1486,50 @@ function vAgenda() {
   const semanas = Math.ceil((ini + nd) / 7);
   const t = hoje();
   const porDia = new Map();
-  for (const a of atividadesOrdenadas()) {
-    if (!S.agendaTipos[a.tipo]) continue;
-    if (!porDia.has(a.data)) porDia.set(a.data, []);
-    porDia.get(a.data).push(a);
-  }
+  const add = (d, x) => { if (!porDia.has(d)) porDia.set(d, []); porDia.get(d).push(x); };
+  for (const a of atividadesOrdenadas()) if (S.agendaTipos[a.tipo] && a.status !== 'cancelada') add(a.data, a);
   if (S.agendaTipos.evento) for (const e of eventosOrdenados()) {
     const fim = e.dataFim && e.dataFim > e.data ? e.dataFim : e.data;
-    for (let d = e.data, n = 0; d <= fim && n < 21; d = addDias(d, 1), n++) {
-      if (!porDia.has(d)) porDia.set(d, []);
-      porDia.get(d).unshift({ ...e, tipo: 'evento', titulo: e.nome, status: '' });
-    }
+    for (let d = e.data, n = 0; d <= fim && n < 21; d = addDias(d, 1), n++) add(d, { ...e, tipo: 'evento', titulo: e.nome, status: '' });
   }
-  const grid = h('div', { class: 'cal', role: 'grid', id: 'calendario' });
-  for (const d of DOW) grid.append(h('div', { class: 'cal-dow', role: 'columnheader' }, d));
+  const mid = meuMembroId();
+  const grid = h('div', { class: 'cal2', role: 'grid', id: 'calendario', 'aria-label': 'Calendário do mês' });
+  for (const d of ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']) grid.append(h('div', { class: 'cal2-dow', role: 'columnheader' }, h('span', { class: 'lg' }, d), h('span', { class: 'sm' }, d.slice(0, 3))));
   for (let i = 0; i < semanas * 7; i++) {
     const dt = new Date(y, m, 1 - ini + i);
     const iso = isoOf(dt);
     const evs = porDia.get(iso) || [];
-    const cls = ['cal-day'];
-    if (dt.getMonth() !== m) cls.push('out');
-    if (iso === t) cls.push('today');
-    if (iso === S.diaSel) cls.push('sel');
-    const cell = h('div', { class: cls.join(' '), role: 'gridcell', onclick: e => { if (e.target.closest('.cal-ev')) return; S.diaSel = iso; agendar(); } },
-      h('button', { type: 'button', class: 'cal-n', 'aria-label': fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' }) + (evs.length ? `, ${plural(evs.length, 'atividade', 'atividades')}` : '') }, dt.getDate()),
-      evs.slice(0, 3).map(a => h('button', { type: 'button', class: `cal-ev t-${a.tipo}${a.status === 'cancelada' ? ' cancel' : ''}`, title: `${TIPOS[a.tipo]}: ${tituloAt(a)}`, onclick: () => a.tipo === 'evento' ? gavetaEvento(a.id) : gavetaAtividade(a.id) },
-        (a.inicio ? a.inicio + ' ' : '') + tituloAt(a))),
-      evs.length > 3 ? h('span', { class: 'cal-more' }, `+${evs.length - 3}`) : null,
-      evs.length ? h('span', { class: 'dots', 'aria-hidden': 'true' }, evs.slice(0, 4).map(a => h('span', { class: 'dot t-' + a.tipo }))) : null);
-    grid.append(cell);
+    const fora = dt.getMonth() !== m;
+    const ats = evs.filter(x => x.tipo !== 'evento');
+    const livre = ats.some(a => checkinAberto(a) && (() => { const L = listaDe(a); return !L.v || L.dentro < L.v; })());
+    const meu = mid && ats.some(a => meuItem(a));
+    const rotulo = fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' }) + (evs.length ? `: ${plural(ats.length, 'horário', 'horários')}` : ': sem horários') + (meu ? ', você tem check-in' : '');
+    grid.append(h('button', { type: 'button', class: 'cal2-d' + (fora ? ' out' : '') + (iso === t ? ' today' : '') + (iso < t ? ' past' : '') + (evs.length ? ' has' : ''), role: 'gridcell', 'aria-label': rotulo, onclick: () => gavetaDia(iso) },
+      h('span', { class: 'cal2-top' }, h('span', { class: 'cal2-n' }, dt.getDate()), meu ? h('span', { class: 'cal2-eu', title: 'Você tem check-in neste dia' }, '✓') : null),
+      h('span', { class: 'cal2-evs' }, evs.slice(0, 3).map(x => h('span', { class: 'cal2-ev t-' + x.tipo }, x.inicio ? h('b', null, x.inicio) : null, ' ', tituloAt(x))),
+        evs.length > 3 ? h('span', { class: 'cal2-more' }, `+${evs.length - 3} horário(s)`) : null),
+      evs.length ? h('span', { class: 'cal2-dots', 'aria-hidden': 'true' }, evs.slice(0, 4).map(x => h('span', { class: 'dot t-' + x.tipo }))) : null,
+      livre && iso >= t ? h('span', { class: 'cal2-livre' }, 'vagas') : null));
   }
   const mudarMes = d => { const n = new Date(y, m + d, 1); S.mes = { y: n.getFullYear(), m: n.getMonth() }; agendar(); };
   const nomeMesBruto = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   const nomeMes = nomeMesBruto.charAt(0).toUpperCase() + nomeMesBruto.slice(1);
   const filtro = h('div', { class: 'seg', role: 'group', 'aria-label': 'Tipos exibidos' },
-    ['aula', 'pratica', 'evento'].map(tp => h('button', { type: 'button', 'aria-pressed': String(S.agendaTipos[tp]), onclick: () => { S.agendaTipos[tp] = !S.agendaTipos[tp]; agendar(); } },
-      h('span', { class: 'dot t-' + tp, style: 'display:inline-block;margin-right:6px;vertical-align:middle' }), tp === 'aula' ? 'Aulas fechadas' : tp === 'pratica' ? 'Práticas' : 'Eventos')));
+    ['pratica', 'aula', 'evento'].map(tp => h('button', { type: 'button', 'aria-pressed': String(S.agendaTipos[tp]), onclick: () => { S.agendaTipos[tp] = !S.agendaTipos[tp]; agendar(); } },
+      h('span', { class: 'dot t-' + tp, style: 'display:inline-block;margin-right:6px;vertical-align:middle' }), tp === 'aula' ? 'Aulas' : tp === 'pratica' ? 'Práticas' : 'Eventos')));
   const calCard = h('section', { class: 'card' },
     h('div', { class: 'cal-head' },
-      h('div', { class: 'cal-nav' }, h('button', { type: 'button', class: 'icon-btn', 'aria-label': 'Mês anterior', onclick: () => mudarMes(-1) }, ic('left')),
+      h('div', { class: 'cal-nav' },
+        h('button', { type: 'button', class: 'icon-btn', 'aria-label': 'Mês anterior', onclick: () => mudarMes(-1) }, ic('left')),
         h('h2', { class: 'cal-month', 'aria-live': 'polite' }, nomeMes),
         h('button', { type: 'button', class: 'icon-btn', 'aria-label': 'Próximo mês', onclick: () => mudarMes(1) }, ic('right')),
-        btn('Hoje', () => { const d = new Date(); S.mes = { y: d.getFullYear(), m: d.getMonth() }; S.diaSel = hoje(); agendar(); }, { sm: true })),
+        btn('Hoje', () => { const d = new Date(); S.mes = { y: d.getFullYear(), m: d.getMonth() }; agendar(); }, { sm: true })),
       filtro),
+    h('div', { class: 'cal2-dica' }, ic('info', 15), 'Clique num dia para ver os horários e colocar seu nome.'),
     grid);
-
-  const evDia = (porDia.get(S.diaSel) || []);
-  const podeCriar = pode('aulas') || pode('praticas');
-  const diaCard = card(fmt(S.diaSel, { weekday: 'long', day: 'numeric', month: 'long' }), evDia.length ? plural(evDia.length, 'atividade', 'atividades') : 'Dia livre',
-    h('div', null,
-      evDia.length ? h('div', { class: 'rows' }, evDia.map(a => a.tipo === 'evento' ? linhaEvento(a) : linhaAtividade(a))) : h('div', { class: 'empty' }, 'Nenhuma atividade neste dia.'),
-      podeCriar ? h('div', { class: 'filters', style: 'padding:12px 18px 16px;border-top:1px solid var(--line)' },
-        pode('aulas') ? btn('Aula fechada', () => gavetaAtividade(null, { tipo: 'aula', data: S.diaSel }), { sm: true, icon: 'plus', kind: 'primary' }) : null,
-        pode('praticas') ? btn('Prática', () => gavetaAtividade(null, { tipo: 'pratica', data: S.diaSel }), { sm: true, icon: 'plus' }) : null) : null),
-    { flush: true, id: 'dia-selecionado' });
-
   return h('div', { class: 'page' },
-    pageHead('Agenda', 'Aulas fechadas e dias de prática', [pode('campos') && S.campos.size ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'shuffle' }) : null]),
-    cardCheckin(),
-    h('div', { class: 'cal-wrap' }, calCard, diaCard));
+    pageHead('Agenda', 'Calendário de práticas, aulas e eventos', [pode('campos') && S.campos.size ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'shuffle' }) : null]),
+    calCard, cardMeusCheckins());
 }
 
 /* ================= vista: aulas e práticas ================= */
@@ -1715,7 +1753,7 @@ function vAcesso() {
       onchange: e => { const v = Math.min(100, Math.max(0, Number(e.target.value) || 0)); salvarCfg(n => { n.regras.freqMinima = v; }, 'Frequência mínima atualizada.'); } })),
     sw('abona', 'Falta justificada não conta contra a frequência', cfg.regras.justificadaAbona, e => { const v = e.target.checked; salvarCfg(n => { n.regras.justificadaAbona = v; }, 'Regra atualizada.'); }, !ed)), { id: 'regras' });
   const previa = card('Ver o painel como', 'Confira o que cada papel enxerga antes de liberar', h('div', { class: 'preview-roles' },
-    ['diretoria', 'coordenacao', 'membro'].map(p => btn(nomePapel(p), () => { S.previa = p; location.hash = 'painel'; agendar(); }, { icon: 'eye', sm: true }))), { id: 'previa' });
+    ['diretoria', 'diretorPraticas', 'coordenacao', 'membro'].map(p => btn(nomePapel(p), () => { S.previa = p; location.hash = 'painel'; agendar(); }, { icon: 'eye', sm: true }))), { id: 'previa' });
 
   return h('div', { class: 'page' },
     pageHead('Permissões', 'Presidência', null),
@@ -1953,142 +1991,189 @@ function vProdutos() {
 }
 
 /* ================= check-in ================= */
+/* Cada membro coloca o próprio nome num horário. A lista segue a prioridade: confirmados pela
+   direção de práticas primeiro; depois Plenos; dentro de cada categoria, a ordem de chegada.
+   Quem cabe nas vagas aparece "na vaga"; o restante fica na lista de espera.
+   Só quem tem a permissão "Check-ins" (Diretoria de práticas e Presidência, por padrão) muda as escolhas. */
 const checkinsDe = aid => [...S.checkins.values()].filter(c => c.atividadeId === aid);
 const minhaCategoria = () => { const m = S.membros.get(meuMembroId()); return m ? m.categoria : ''; };
 const ehPleno = mid => (S.membros.get(mid) || {}).categoria === 'pleno';
-function semLimite(a) { return !(Number(a.vagas) > 0); }
-function confirmadosDe(a) {
-  if (a.tipo === 'pratica') return [...new Set(a.escalados || [])];
-  return checkinsDe(a.id).filter(c => c.status === 'confirmado').map(c => c.membroId);
-}
-// Ordem da fila: Plenos primeiro; dentro da categoria, quem fez check-in antes.
-function ordenarFila(lista) {
-  return lista.slice().sort((x, y) => (ehPleno(y.membroId) - ehPleno(x.membroId)) || String(x.criadoEm || '').localeCompare(String(y.criadoEm || '')));
-}
-function filaDe(a) { return ordenarFila(checkinsDe(a.id).filter(c => c.status === 'solicitado' && !confirmadosDe(a).includes(c.membroId))); }
+const gestorCheckin = () => pode('checkins');
 function checkinAberto(a) { return a.checkinAberto !== false && a.status !== 'cancelada' && a.status !== 'realizada' && a.data >= hoje(); }
-function vagasInfo(a) {
-  const conf = confirmadosDe(a).length, fila = filaDe(a).length;
+function listaDe(a) {
+  const todos = checkinsDe(a.id);
+  const porMembro = new Map(todos.map(c => [c.membroId, c]));
+  const conf = new Set(todos.filter(c => c.status === 'confirmado').map(c => c.membroId));
+  if (a.tipo === 'pratica') for (const mid of a.escalados || []) conf.add(mid);
+  const confirmados = [...conf].map(mid => ({ membroId: mid, c: porMembro.get(mid) || null, estado: 'confirmado' }))
+    .sort((x, y) => (ehPleno(y.membroId) - ehPleno(x.membroId)) || porNome(S.membros.get(x.membroId) || {}, S.membros.get(y.membroId) || {}));
+  const fila = todos.filter(c => c.status === 'solicitado' && !conf.has(c.membroId))
+    .sort((x, y) => (ehPleno(y.membroId) - ehPleno(x.membroId)) || String(x.criadoEm || '').localeCompare(String(y.criadoEm || '')));
   const v = Number(a.vagas) || 0;
-  const txt = (v ? `${conf}/${v} vagas` : `${conf} confirmado${conf === 1 ? '' : 's'}`) + (fila ? ` · ${fila} na fila` : '');
-  const pct = v ? Math.min(100, (100 * conf) / v) : 0;
-  return h('span', { class: 'meter' + (v && conf >= v ? ' full' : '') }, v ? h('span', { class: 'meter-t' }, h('span', { class: 'meter-f', style: `width:${pct}%` })) : null, h('span', { class: 'num' }, txt));
+  const livres = v ? Math.max(0, v - confirmados.length) : Infinity;
+  const naFila = fila.map((c, i) => ({ membroId: c.membroId, c, estado: i < livres ? 'vaga' : 'espera' }));
+  const recusados = todos.filter(c => c.status === 'recusado' && !conf.has(c.membroId)).map(c => ({ membroId: c.membroId, c, estado: 'recusado' }));
+  const dentro = confirmados.length + naFila.filter(x => x.estado === 'vaga').length;
+  return { itens: [...confirmados, ...naFila], recusados, v, dentro, espera: naFila.filter(x => x.estado === 'espera').length, confirmados: confirmados.length };
 }
-function statusMeu(a) {
+function confirmadosDe(a) { return listaDe(a).itens.filter(x => x.estado === 'confirmado').map(x => x.membroId); }
+function filaDe(a) { return listaDe(a).itens.filter(x => x.estado !== 'confirmado').map(x => x.c); }
+function meuItem(a) {
   const mid = meuMembroId(); if (!mid) return null;
-  if (confirmadosDe(a).includes(mid)) return 'confirmado';
-  const c = S.checkins.get(`${a.id}_${mid}`);
-  return c ? c.status : null;
+  const L = listaDe(a);
+  return L.itens.find(x => x.membroId === mid) || L.recusados.find(x => x.membroId === mid) || null;
 }
-function posicaoNaFila(a, mid) { const i = filaDe(a).findIndex(c => c.membroId === mid); return i < 0 ? null : i + 1; }
+function statusMeu(a) { const x = meuItem(a); return x ? x.estado : null; }
+function vagasInfo(a) {
+  const L = listaDe(a);
+  const txt = (L.v ? `${Math.min(L.dentro, L.v)}/${L.v} vagas` : `${L.dentro} inscrito${L.dentro === 1 ? '' : 's'}`) + (L.espera ? ` · ${L.espera} na espera` : '');
+  const pct = L.v ? Math.min(100, (100 * L.dentro) / L.v) : 0;
+  return h('span', { class: 'meter' + (L.v && L.dentro >= L.v ? ' full' : '') }, L.v ? h('span', { class: 'meter-t' }, h('span', { class: 'meter-f', style: `width:${pct}%` })) : null, h('span', { class: 'num' }, txt));
+}
 async function fazerCheckin(a) {
   const mid = meuMembroId(); if (!mid) return;
   try {
-    await gravar(`checkins/${a.id}_${mid}`, { atividadeId: a.id, membroId: mid, tipo: a.tipo, data: a.data, status: 'solicitado', criadoEm: new Date().toISOString() });
-    toast(ehPleno(mid) ? 'Check-in feito. Como Pleno, você tem prioridade na fila.' : 'Check-in feito. A coordenação confirma as vagas.', 'good');
+    await gravar(`checkins/${a.id}_${mid}`, { atividadeId: a.id, membroId: mid, tipo: a.tipo, data: a.data, status: 'solicitado', criadoEm: new Date().toISOString() },
+      { negado: 'O banco recusou o check-in. Confira se o firestore.rules mais recente foi publicado e se o seu e-mail está vinculado ao seu nome em Permissões.' });
+    const x = meuItem({ ...a, id: a.id });
+    toast(x && x.estado === 'espera' ? 'Seu nome entrou na lista de espera deste horário.' : 'Seu nome está na lista deste horário.', 'good');
   } catch { /* tratado */ }
 }
 async function cancelarCheckin(a) {
-  const mid = meuMembroId();
-  try { await gravar(`checkins/${a.id}_${mid}`, null, { apagar: true }); toast('Check-in cancelado.'); } catch { /* tratado */ }
+  try { await gravar(`checkins/${a.id}_${meuMembroId()}`, null, { apagar: true }); toast('Seu nome saiu da lista.'); } catch { /* tratado */ }
 }
-function acaoCheckin(a) {
+/* Ações da direção de práticas sobre o nome de um membro. */
+async function decidir(a, mid, acao) {
+  const id = `${a.id}_${mid}`, agora = new Date().toISOString();
+  const existe = S.checkins.has(id);
+  const L = listaDe(a);
+  try {
+    if (acao === 'confirmar') {
+      if (L.v && L.confirmados >= L.v) toast('As vagas já estão preenchidas: confirmando acima do limite.', 'warn');
+      if (existe) await gravar(`checkins/${id}`, { status: 'confirmado', decididoEm: agora, decididoPor: quemSou() }, { atualizar: true });
+      else await gravar(`checkins/${id}`, { atividadeId: a.id, membroId: mid, tipo: a.tipo, data: a.data, status: 'confirmado', criadoEm: agora, decididoEm: agora, decididoPor: quemSou() });
+    } else if (acao === 'fila') {
+      if (existe) await gravar(`checkins/${id}`, { status: 'solicitado', decididoEm: agora, decididoPor: quemSou() }, { atualizar: true });
+    } else if (acao === 'remover') {
+      if (existe) await gravar(`checkins/${id}`, { status: 'recusado', decididoEm: agora, decididoPor: quemSou() }, { atualizar: true });
+    } else if (acao === 'apagar') {
+      if (existe) await gravar(`checkins/${id}`, null, { apagar: true });
+    }
+    if (a.tipo === 'pratica') {
+      const atual = (S.atRaw.get(a.id) || a).escalados || [];
+      const novo = acao === 'confirmar' ? [...new Set([...atual, mid])] : atual.filter(x => x !== mid);
+      if (novo.length !== atual.length) await gravar(`atividades/${a.id}`, { escalados: novo, atualizadoEm: agora, atualizadoPor: quemSou() }, { atualizar: true });
+    }
+  } catch { /* tratado */ }
+}
+async function adicionarMembro(a, mid) {
+  if (!mid) return;
+  await decidir(a, mid, 'confirmar');
+  toast('Membro adicionado e confirmado neste horário.', 'good');
+}
+async function confirmarLista(a) {
+  const alvo = listaDe(a).itens.filter(x => x.estado === 'vaga');
+  if (!alvo.length) { toast('Ninguém aguardando dentro das vagas.', 'warn'); return; }
+  for (const x of alvo) await decidir(a, x.membroId, 'confirmar');
+  toast(`${plural(alvo.length, 'nome confirmado', 'nomes confirmados')}.`, 'good');
+}
+const ROTULO_ESTADO = { confirmado: ['s-realizada', '✓ Confirmado'], vaga: ['s-hoje', 'Na vaga'], espera: ['s-pendente', 'Lista de espera'], recusado: ['s-neutro', 'Não selecionado'] };
+function minhaAcao(a) {
   const mid = meuMembroId();
-  if (!mid || a.tipo === 'evento' || !S.db || S.previa) return null;
-  const st = statusMeu(a);
-  if (st === 'confirmado') return h('span', { class: 'pill s-realizada' }, '✓ Vaga confirmada');
-  if (st === 'recusado') return h('span', { class: 'pill s-neutro' }, 'Não selecionado');
-  if (st === 'solicitado') {
-    const pos = posicaoNaFila(a, mid);
-    return h('span', { class: 'ck-acts' }, h('span', { class: 'pill s-hoje' }, `Na fila${pos ? ` · ${pos}º` : ''}`),
-      checkinAberto(a) ? btn('Cancelar', () => cancelarCheckin(a), { kind: 'text', sm: true }) : null);
+  if (a.tipo === 'evento' || !S.db || S.previa) return null;
+  if (!mid) return h('span', { class: 'card-s' }, 'Vincule seu e-mail ao seu nome em Permissões para fazer check-in');
+  const x = meuItem(a);
+  if (x) {
+    const [cls, rot] = ROTULO_ESTADO[x.estado];
+    const podeCancelar = x.c && x.c.status === 'solicitado' && checkinAberto(a);
+    return h('span', { class: 'ck-acts' }, h('span', { class: 'pill ' + cls }, 'Você: ' + rot),
+      podeCancelar ? btn('Tirar meu nome', () => cancelarCheckin(a), { kind: 'text', sm: true }) : null,
+      x.estado === 'confirmado' ? h('span', { class: 'card-s' }, 'Para desistir, avise a direção de práticas.') : null);
   }
-  if (!checkinAberto(a)) return null;
-  if (!publicoInclui(a.publico, minhaCategoria())) return h('span', { class: 'card-s' }, 'Só para ' + (a.publico === 'pleno' ? 'Plenos' : 'Júnior'));
-  return btn('Fazer check-in', () => fazerCheckin(a), { kind: 'gold', sm: true, icon: 'check' });
+  if (!checkinAberto(a)) return h('span', { class: 'card-s' }, a.checkinAberto === false ? 'Check-in fechado' : 'Check-in encerrado');
+  if (!publicoInclui(a.publico, minhaCategoria())) return h('span', { class: 'card-s' }, 'Só para ' + (a.publico === 'pleno' ? 'membros Plenos' : 'membros Júnior'));
+  return btn('Colocar meu nome', () => fazerCheckin(a), { kind: 'gold', icon: 'check', id: 'ck-' + a.id });
 }
-function linhaCheckin(a) {
-  const meta = [horario(a)]; if (a.local) meta.push(a.local);
-  const gestor = pode(a.tipo === 'aula' ? 'aulas' : 'praticas');
-  const fila = filaDe(a).length;
-  return h('div', { class: 'ck-row' },
-    dateBlock(a.data),
-    h('button', { type: 'button', class: 'ck-main', onclick: () => gavetaAtividade(a.id) },
-      h('span', { class: 'row-top' }, chipTipo(a), a.checkinAberto === false ? h('span', { class: 'pill s-neutro' }, 'Check-in fechado') : null),
-      h('span', { class: 'row-title' }, tituloAt(a)), h('span', { class: 'row-meta' }, meta.join(' · '))),
-    h('div', { class: 'ck-side' }, vagasInfo(a),
-      h('div', { class: 'ck-acts' }, acaoCheckin(a), gestor && fila ? btn(`Definir vagas (${fila})`, () => gavetaAtividade(a.id, { foco: 'checkin' }), { sm: true }) : null)));
-}
-function cardCheckin() {
-  const t = hoje();
-  const lista = atividadesOrdenadas().filter(a => a.data >= t && a.data <= addDias(t, 21) && a.status !== 'cancelada' && a.status !== 'realizada');
-  const semVinculo = !meuMembroId();
-  return card('Check-in', 'Próximas três semanas · Plenos têm prioridade na fila; a coordenação confirma quem vai',
-    h('div', null,
-      semVinculo ? h('div', { class: 'note', style: 'margin:0 18px 12px' }, 'Para fazer check-in, seu e-mail precisa estar vinculado ao seu nome na lista de membros. Peça à presidência em Permissões.') : null,
-      lista.length ? h('div', null, lista.map(linhaCheckin)) : h('div', { class: 'empty' }, 'Nenhuma aula ou prática nas próximas três semanas.')),
-    { flush: true, id: 'checkin' });
-}
-/* Seção de check-in dentro da gaveta da atividade; f é o formulário aberto (mantém escala e vagas em dia). */
-function secaoCheckin(a, f, redesenhar) {
-  if (!a || !a.id) return null;
-  const gestor = pode(a.tipo === 'aula' ? 'aulas' : 'praticas');
-  const todos = checkinsDe(a.id);
-  const confirmadosIds = a.tipo === 'pratica' ? [...new Set(f.escalados)] : todos.filter(c => c.status === 'confirmado').map(c => c.membroId);
-  const fila = ordenarFila(todos.filter(c => c.status === 'solicitado' && !confirmadosIds.includes(c.membroId)));
-  const recusados = todos.filter(c => c.status === 'recusado' && !confirmadosIds.includes(c.membroId));
-  const v = Number(f.vagas) || 0;
-  const livres = v ? Math.max(0, v - confirmadosIds.length) : Infinity;
+function listaNomes(a, { compacta = false } = {}) {
+  const L = listaDe(a);
+  const gestor = gestorCheckin();
   const eu = meuMembroId();
-  const setStatus = async (mid, status) => {
-    const ref = `checkins/${a.id}_${mid}`;
-    const agora = new Date().toISOString();
-    try {
-      if (status === 'confirmado' && v && confirmadosIds.length >= v) toast('Vagas já preenchidas: confirmando acima do limite.', 'warn');
-      if (S.checkins.has(`${a.id}_${mid}`)) await gravar(ref, { status, decididoEm: agora, decididoPor: quemSou() }, { atualizar: true });
-      else if (status === 'confirmado') await gravar(ref, { atividadeId: a.id, membroId: mid, tipo: a.tipo, data: a.data, status, criadoEm: agora, decididoEm: agora, decididoPor: quemSou() });
-      if (a.tipo === 'pratica') {
-        const novo = status === 'confirmado' ? [...new Set([...f.escalados, mid])] : f.escalados.filter(x => x !== mid);
-        if (novo.length !== f.escalados.length) {
-          f.escalados = novo;
-          await gravar(`atividades/${a.id}`, { escalados: novo, atualizadoEm: agora, atualizadoPor: quemSou() }, { atualizar: true });
-        }
-      }
-      redesenhar();
-    } catch { /* tratado */ }
+  const linha = (x, n) => {
+    const m = S.membros.get(x.membroId);
+    const [cls, rot] = ROTULO_ESTADO[x.estado];
+    const acoes = !gestor ? null : x.estado === 'confirmado'
+      ? h('span', { class: 'ck-acts' }, x.c ? btn('Voltar à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true }) : null, btn('Remover', () => decidir(a, x.membroId, x.c ? 'remover' : 'apagar'), { kind: 'text', sm: true }))
+      : x.estado === 'recusado'
+        ? h('span', { class: 'ck-acts' }, btn('Voltar à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true }))
+        : h('span', { class: 'ck-acts' }, btn('Confirmar', () => decidir(a, x.membroId, 'confirmar'), { kind: 'primary', sm: true }), btn('Remover', () => decidir(a, x.membroId, 'remover'), { kind: 'text', sm: true }));
+    return h('div', { class: 'fila-i' + (x.estado === 'confirmado' ? ' conf' : '') + (x.estado === 'recusado' ? ' rec' : '') + (x.membroId === eu ? ' eu' : '') },
+      h('span', { class: 'fila-n' }, x.estado === 'confirmado' ? '✓' : x.estado === 'recusado' ? '–' : n),
+      h('span', { style: 'min-width:0' }, (m && m.nome) || 'Membro removido', ehPleno(x.membroId) ? h('span', { class: 'prio', title: 'Membro Pleno: prioridade na lista' }, 'PLENO') : null,
+        ' ', h('span', { class: 'pill ' + cls, style: 'margin-left:4px' }, rot)),
+      acoes || h('span'));
   };
-  const confirmarPrioridade = async () => {
-    const alvo = fila.slice(0, livres === Infinity ? fila.length : livres);
-    if (!alvo.length) { toast(livres ? 'Ninguém na fila.' : 'Não há vagas livres.', 'warn'); return; }
-    for (const c of alvo) await setStatus(c.membroId, 'confirmado');
-    toast(`${plural(alvo.length, 'vaga confirmada', 'vagas confirmadas')} por prioridade.`, 'good');
-  };
-  const pessoa = (mid, extra) => {
-    const m = S.membros.get(mid);
-    return h('span', { style: 'min-width:0' }, (m && m.nome) || 'Membro removido', ehPleno(mid) ? h('span', { class: 'prio', title: 'Prioridade de membro Pleno' }, 'PLENO') : null, extra ? h('span', { class: 'card-s' }, ' · ' + extra) : null);
-  };
-  const quando = c => c && c.criadoEm ? 'check-in ' + new Date(c.criadoEm).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
-  const linhas = [];
-  confirmadosIds.forEach(mid => {
-    const c = S.checkins.get(`${a.id}_${mid}`);
-    linhas.push(h('div', { class: 'fila-i conf' + (mid === eu ? ' eu' : '') }, h('span', { class: 'fila-n' }, '✓'), pessoa(mid, c ? 'confirmado' : (a.tipo === 'pratica' ? 'escalado' : 'confirmado')),
-      gestor ? btn('Retirar', () => setStatus(mid, c ? 'solicitado' : 'recusado'), { kind: 'text', sm: true, title: c ? 'Volta para a fila' : 'Tira da escala' }) : h('span')));
-  });
-  fila.forEach((c, i) => {
-    linhas.push(h('div', { class: 'fila-i' + (c.membroId === eu ? ' eu' : '') }, h('span', { class: 'fila-n' }, i + 1), pessoa(c.membroId, quando(c)),
-      gestor ? h('span', { class: 'ck-acts' }, btn('Confirmar', () => setStatus(c.membroId, 'confirmado'), { kind: 'primary', sm: true }), btn('Recusar', () => setStatus(c.membroId, 'recusado'), { kind: 'text', sm: true })) : h('span')));
-  });
-  recusados.forEach(c => {
-    linhas.push(h('div', { class: 'fila-i rec' + (c.membroId === eu ? ' eu' : '') }, h('span', { class: 'fila-n' }, '–'), pessoa(c.membroId, 'não selecionado'),
-      gestor ? btn('Voltar à fila', () => setStatus(c.membroId, 'solicitado'), { kind: 'text', sm: true }) : h('span')));
-  });
+  let n = 0;
+  const linhas = L.itens.map(x => linha(x, x.estado === 'confirmado' ? 0 : ++n));
+  if (gestor) L.recusados.forEach(x => linhas.push(linha(x, 0)));
+  const fora = gestor ? membrosAtivos().filter(m => !L.itens.some(x => x.membroId === m.id) && publicoInclui(a.publico, m.categoria)) : [];
+  return h('div', { class: 'sec', style: 'gap:8px' },
+    linhas.length ? h('div', { class: 'fila' }, linhas) : h('div', { class: 'card-s' }, 'Ninguém colocou o nome ainda.'),
+    gestor && !compacta ? h('div', { class: 'filters' },
+      L.itens.some(x => x.estado === 'vaga') ? btn('Confirmar quem está na vaga', () => confirmarLista(a), { kind: 'gold', sm: true, icon: 'check' }) : null,
+      fora.length ? sel('add-' + a.id, '', [['', 'Adicionar um membro…'], ...fora.map(m => [m.id, m.nome + (m.categoria === 'pleno' ? ' (Pleno)' : '')])], { aria: 'Adicionar membro a este horário', onchange: e => adicionarMembro(a, e.target.value) }) : null) : null);
+}
+/* Gaveta do dia: os horários daquela data, com a lista de nomes de cada um. */
+function gavetaDia(iso) {
+  const token = S.diaToken && S.gavetaToken === S.diaToken ? S.diaToken : {};
+  S.gavetaToken = token; S.diaToken = token; S.diaAberto = iso;
+  S.redesenhar = { token, fn: () => gavetaDia(iso) };
+  const ats = atividadesOrdenadas().filter(a => a.data === iso && a.status !== 'cancelada' && S.agendaTipos[a.tipo]);
+  const evs = S.agendaTipos.evento ? eventosOrdenados().filter(e => e.data <= iso && (e.dataFim || e.data) >= iso) : [];
+  const horario2 = a => a.inicio ? (a.fim ? `${a.inicio} às ${a.fim}` : a.inicio) : 'Horário a definir';
+  const cards = ats.map(a => h('article', { class: 'slot k-' + a.tipo, id: 'slot-' + a.id },
+    h('div', { class: 'slot-h' },
+      h('div', { class: 'slot-hora' }, ic('clock', 16), horario2(a)),
+      chipTipo(a)),
+    h('div', { class: 'slot-t' }, tituloAt(a)),
+    h('div', { class: 'slot-m' }, [a.local, a.responsavel ? (a.tipo === 'aula' ? 'Palestrante: ' : 'Preceptor: ') + a.responsavel : '', a.publico && a.publico !== 'todos' ? PUBLICOS[a.publico] : ''].filter(Boolean).join(' · ')),
+    h('div', { class: 'slot-v' }, vagasInfo(a), (pode(a.tipo === 'aula' ? 'aulas' : 'praticas') || gestorCheckin()) ? btn('Detalhes', () => { S.diaAberto = null; gavetaAtividade(a.id, { foco: 'checkin' }); }, { kind: 'text', sm: true }) : null),
+    h('div', { class: 'slot-eu' }, minhaAcao(a)),
+    listaNomes(a)));
+  const evCards = evs.map(e => h('article', { class: 'slot k-evento' }, h('div', { class: 'slot-h' }, h('div', { class: 'slot-hora' }, ic('award', 16), 'Evento científico')),
+    h('div', { class: 'slot-t' }, e.nome), h('div', { class: 'slot-m' }, [periodoEvento(e), e.local].filter(Boolean).join(' · ')),
+    linkOk(e.link) ? h('a', { class: 'btn btn-ghost btn-sm', href: e.link.trim(), target: '_blank', rel: 'noopener noreferrer', style: 'align-self:flex-start' }, 'Acessar o evento') : null));
+  const criar = [pode('praticas') ? btn('Nova prática neste dia', () => { S.diaAberto = null; gavetaAtividade(null, { tipo: 'pratica', data: iso }); }, { sm: true, icon: 'plus' }) : null,
+    pode('aulas') ? btn('Nova aula neste dia', () => { S.diaAberto = null; gavetaAtividade(null, { tipo: 'aula', data: iso }); }, { sm: true, icon: 'plus' }) : null].filter(Boolean);
+  const corpo = [
+    !meuMembroId() && S.db && !S.previa ? h('div', { class: 'note gold' }, 'Para colocar seu nome, seu e-mail precisa estar vinculado ao seu nome da lista de membros (Permissões).') : null,
+    cards.length || evCards.length ? h('div', { class: 'slots' }, cards, evCards) : h('div', { class: 'empty', style: 'padding:6px 0' }, 'Nenhum horário de prática ou aula neste dia.'),
+    h('div', { class: 'fld-h' }, 'Ordem da lista: confirmados; depois membros Plenos; dentro de cada categoria, quem colocou o nome primeiro. Quem passa do número de vagas fica na lista de espera.')];
+  const qtd = ats.length;
+  abrirGaveta({ titulo: fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase()),
+    sub: qtd ? plural(qtd, 'horário', 'horários') : 'Agenda', corpo,
+    rodape: criar.length ? [...criar, h('span', { class: 'sp' }), btn('Fechar', () => { S.diaAberto = null; fecharGaveta(); })] : [h('span', { class: 'sp' }), btn('Fechar', () => { S.diaAberto = null; fecharGaveta(); })] });
+}
+/* Seção de check-in dentro da gaveta de uma atividade (mesma lista e mesmas ações do dia). */
+function secaoCheckin(a) {
+  if (!a || !a.id) return null;
   return h('div', { class: 'sec', id: 'sec-checkin' },
-    h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Check-in e vagas'),
-      h('span', { class: 'meter num' }, v ? `${confirmadosIds.length}/${v} vagas confirmadas` : `${confirmadosIds.length} confirmados · sem limite de vagas`)),
-    h('div', { class: 'fld-h' }, 'Fila: Plenos primeiro e, dentro de cada categoria, pela ordem de check-in. Quem confirma é a coordenação (práticas) ou a diretoria (aulas).'),
-    acaoCheckin(a) ? h('div', { class: 'filters' }, h('span', { class: 'fld-l' }, 'Você:'), acaoCheckin(a)) : null,
-    linhas.length ? h('div', { class: 'fila' }, linhas) : h('div', { class: 'card-s' }, 'Nenhum check-in ainda.'),
-    gestor && fila.length ? h('div', { class: 'filters' }, btn(livres === Infinity ? `Confirmar todos da fila (${fila.length})` : `Confirmar por prioridade (${Math.min(livres, fila.length)})`, confirmarPrioridade, { icon: 'check', sm: true, kind: 'gold' })) : null);
+    h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Check-in e vagas'), vagasInfo(a)),
+    h('div', { class: 'filters' }, minhaAcao(a)),
+    listaNomes(a),
+    h('div', { class: 'fld-h' }, 'Confirmados primeiro; depois Plenos; dentro de cada categoria, a ordem de chegada. Só quem tem a permissão Check-ins altera a lista.'));
+}
+function cardMeusCheckins() {
+  const mid = meuMembroId();
+  if (!mid) return null;
+  const minhas = atividadesOrdenadas().filter(a => a.data >= hoje() && a.status !== 'cancelada' && meuItem(a));
+  return card('Meus check-ins', minhas.length ? plural(minhas.length, 'horário', 'horários') : null,
+    minhas.length ? h('div', { class: 'rows' }, minhas.map(a => {
+      const [cls, rot] = ROTULO_ESTADO[meuItem(a).estado];
+      return h('button', { type: 'button', class: 'row', onclick: () => gavetaDia(a.data) }, dateBlock(a.data),
+        h('span', { class: 'row-main' }, h('span', { class: 'row-top' }, chipTipo(a)), h('span', { class: 'row-title' }, tituloAt(a)), h('span', { class: 'row-meta' }, [horario(a), a.local].filter(Boolean).join(' · '))),
+        h('span', { class: 'row-side' }, h('span', { class: 'pill ' + cls }, rot)));
+    })) : h('div', { class: 'empty' }, 'Você ainda não colocou seu nome em nenhum horário. Clique num dia do calendário para ver os horários disponíveis.'),
+    { flush: true, id: 'meus-checkins' });
 }
 
 const VIEWS = { eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
@@ -2159,6 +2244,7 @@ function gavetaAtividade(id, preset = {}) {
   const novo = !orig;
   let sujo = false;
   const token = {}; S.gavetaToken = token;
+  let escSujo = false;
 
   function aplicarCampo(ff, c) {
     if (!c) return;
@@ -2171,7 +2257,9 @@ function gavetaAtividade(id, preset = {}) {
   const podePres = () => pode('presencas');
   const up = (k, v) => { f[k] = v; sujo = true; };
 
+  S.redesenhar = { token, fn: () => desenhar() };
   function desenhar() {
+    if (!escSujo && orig && S.atRaw.has(orig.id)) f.escalados = [...(S.atRaw.get(orig.id).escalados || [])];
     const ed = podeDados();
     const corpo = [];
     if (novo && tiposPermitidos.length > 1) corpo.push(seg([['aula', 'Aula fechada'], ['pratica', 'Prática']], f.tipo, v => {
@@ -2203,7 +2291,7 @@ function gavetaAtividade(id, preset = {}) {
     corpo.push(h('div', { class: 'sec' }, h('div', { class: 'sec-t' }, 'Dados'), !ed ? h('div', { class: 'note' }, 'Somente leitura para o seu papel.') : null, dados,
       !ed && f.link && /^https?:\/\//.test(f.link) ? h('a', { href: f.link, target: '_blank', rel: 'noopener' }, 'Abrir material da aula') : null));
 
-    if (!novo) corpo.push(secaoCheckin(orig, f, desenhar));
+    if (!novo) corpo.push(secaoCheckin(S.atividades.get(orig.id) || orig));
 
     // escala
     if (f.tipo === 'pratica' && veEscalas()) {
@@ -2214,17 +2302,17 @@ function gavetaAtividade(id, preset = {}) {
       corpo.push(h('div', { class: 'sec' },
         h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Escala'), meterEscala(f)),
         esc.length ? h('div', { class: 'chips', id: 'escala-chips' }, esc.map(m => h('span', { class: 'pchip' + (ed ? '' : ' ro') }, m.nome,
-          ed ? h('button', { type: 'button', 'aria-label': 'Tirar ' + m.nome + ' da escala', onclick: () => { f.escalados = f.escalados.filter(x => x !== m.id); sujo = true; desenhar(); } }, ic('x', 14)) : null)))
+          ed ? h('button', { type: 'button', 'aria-label': 'Tirar ' + m.nome + ' da escala', onclick: () => { f.escalados = f.escalados.filter(x => x !== m.id); sujo = true; escSujo = true; desenhar(); } }, ic('x', 14)) : null)))
           : h('div', { class: 'card-s' }, 'Ninguém escalado ainda.'),
         ed ? h('div', { class: 'filters' },
           sel('esc-add', '', [['', 'Adicionar membro…'], ...disponiveis.map(m => [m.id, m.nome + (ocup.has(m.id) ? ' (já escalado neste dia)' : '')])], {
-            aria: 'Adicionar membro à escala', onchange: e => { if (e.target.value) { f.escalados = [...f.escalados, e.target.value]; sujo = true; desenhar(); } }
+            aria: 'Adicionar membro à escala', onchange: e => { if (e.target.value) { f.escalados = [...f.escalados, e.target.value]; sujo = true; escSujo = true; desenhar(); } }
           }),
           btn('Completar com rodízio', () => {
             const ids = sugerirEscala({ data: f.data, vagas, publico: f.publico, ja: f.escalados, carga: cargaPraticas(orig && orig.id), ocupados: ocup });
             if (!vagas) { toast('Defina o número de vagas primeiro.', 'warn'); return; }
             if (!ids.length) { toast(f.escalados.length >= vagas ? 'A escala já está completa.' : 'Não há membros disponíveis para este público.', 'warn'); return; }
-            f.escalados = [...f.escalados, ...ids]; sujo = true; desenhar();
+            f.escalados = [...f.escalados, ...ids]; sujo = true; escSujo = true; desenhar();
           }, { icon: 'shuffle', sm: true, title: 'Escolhe quem tem menos práticas e está há mais tempo sem escala' })) : null));
     }
 
@@ -2285,7 +2373,12 @@ function gavetaAtividade(id, preset = {}) {
           tipo: f.tipo, titulo: String(f.titulo || '').trim(), data: f.data, inicio: f.inicio || '', fim: f.fim || '',
           local: String(f.local || '').trim(), responsavel: String(f.responsavel || '').trim(), publico: f.publico || 'todos',
           campoId: f.tipo === 'pratica' ? (f.campoId || '') : '', vagas: f.vagas === '' || f.vagas == null ? 0 : Number(f.vagas) || 0, checkinAberto: f.checkinAberto !== false,
-          escalados: f.tipo === 'pratica' ? f.escalados : [], status: f.status || 'agendada',
+          escalados: f.tipo === 'pratica' ? (() => {
+            if (novo) return f.escalados;
+            const base = orig.escalados || [], vivo = (S.atRaw.get(orig.id) || {}).escalados || base;
+            const add = f.escalados.filter(x => !base.includes(x)), rem = base.filter(x => !f.escalados.includes(x));
+            return [...new Set([...vivo.filter(x => !rem.includes(x)), ...add])];
+          })() : [], status: f.status || 'agendada',
           obs: String(f.obs || ''), link: f.tipo === 'aula' ? String(f.link || '').trim() : '',
           criadoEm: orig ? orig.criadoEm || null : null, criadoPor: orig ? orig.criadoPor || null : null
         };
