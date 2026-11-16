@@ -801,6 +801,7 @@ const ICONS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
   upload: '<path d="M12 21V9m0 0-4 4m4-4 4 4M4 3h16"/>',
   award: '<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/>',
+  file: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
   camera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
   shirt: '<path d="M20.4 6.6 16 4l-1.5 1.5a3.5 3.5 0 0 1-5 0L8 4 3.6 6.6a1 1 0 0 0-.4 1.3l1.6 3a1 1 0 0 0 1.3.4L7 10.8V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9.2l.9.5a1 1 0 0 0 1.3-.4l1.6-3a1 1 0 0 0-.4-1.3z"/>',
   hosp: '<path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16M2 21h20M12 7v6M9 10h6"/>',
@@ -853,14 +854,15 @@ const MODULOS = [
   ['eventos', 'Eventos científicos', 'Cadastrar e editar eventos'],
   ['produtos', 'Produtos LAORTT', 'Ver e editar os pedidos de todos os membros'],
   ['checkins', 'Check-ins', 'Confirmar, remover e reorganizar os nomes que os membros colocam na agenda'],
-  ['midias', 'Fotos e vídeos', 'Ver todos os envios, aprovar para divulgação e remover']
+  ['midias', 'Fotos e vídeos', 'Ver todos os envios, aprovar para divulgação e remover'],
+  ['relatorios', 'Relatório de práticas', 'Ver as práticas de cada membro e emitir relatório com o selo da liga']
 ];
 const PAPEIS = ['presidencia', 'diretoria', 'diretorPraticas', 'marketing', 'coordenacao', 'membro'];
 const CONFIG_PADRAO = {
   papeis: {
     presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true, eventos: true, produtos: true, checkins: true },
     diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false, eventos: true, produtos: true, checkins: false },
-    diretorPraticas: { nome: 'Diretoria de práticas', aulas: false, praticas: true, presencas: true, campos: true, membros: false, eventos: false, produtos: false, checkins: true },
+    diretorPraticas: { nome: 'Diretoria de práticas', aulas: false, praticas: true, presencas: true, campos: true, membros: false, eventos: false, produtos: false, checkins: true, relatorios: true },
     marketing: { nome: 'Diretoria de marketing', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false, checkins: false, midias: true },
     coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false, eventos: false, produtos: false, checkins: false },
     membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false, checkins: false }
@@ -1078,7 +1080,7 @@ function migrarConfig(r) {
   // painéis configurados antes das abas novas: grava as permissões padrão de Eventos e Produtos uma única vez
   if (migrado || r !== 'presidencia' || !S.configRaw || !S.configRaw.papeis) return;
   const d = S.configRaw.papeis.diretoria || {};
-  if ('eventos' in d && 'produtos' in d && 'checkins' in d && S.configRaw.papeis.diretorPraticas && S.configRaw.papeis.marketing) return;
+  if ('eventos' in d && 'produtos' in d && 'checkins' in d && S.configRaw.papeis.diretorPraticas && S.configRaw.papeis.marketing && 'relatorios' in S.configRaw.papeis.diretorPraticas) return;
   migrado = true;
   const novo = clone({ papeis: S.config.papeis, exibicao: S.config.exibicao, regras: S.config.regras, produtos: S.config.produtos, atualizadoEm: new Date().toISOString() });
   gravar('config/papeis', novo).catch(() => { migrado = false; });
@@ -1102,7 +1104,8 @@ function assinarPrivados() {
   const vePres = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].presencas);
   const veCampos = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].campos);
   const veMidias = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].midias);
-  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}|${vePres}|${veCampos}|${veMidias}`;
+  const veRel = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].relatorios);
+  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}|${vePres}|${veCampos}|${veMidias}|${veRel}`;
   migrarConfig(r);
   if (chave === chavePriv) return;
   pararPrivados(); chavePriv = chave;
@@ -1120,9 +1123,9 @@ function assinarPrivados() {
     S.privSubs.push(ouvir(S.db.doc('produtos/' + mid), d => { S.produtos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
     S.privSubs.push(ouvir(S.db.doc('fotos/' + mid), d => { S.fotos = d.exists ? new Map([[mid, { ...d.data(), id: mid }]]) : new Map(); agendar(); }));
   }
-  if (vePres) S.privSubs.push(ouvir(S.db.collection('registros').where('data', '>=', addDias(hoje(), -365)), s => { S.registros = mapaDe(s); agendar(); }));
+  if (vePres || veRel) S.privSubs.push(ouvir(S.db.collection('registros').where('data', '>=', addDias(hoje(), -365)), s => { S.registros = mapaDe(s); agendar(); }));
   else if (mid) S.privSubs.push(ouvir(S.db.collection('registros').where('membroId', '==', mid), s => { S.registros = mapaDe(s); agendar(); }));
-  if (veMidias) S.privSubs.push(ouvir(S.db.collection('midias').where('data', '>=', addDias(hoje(), -365)), s => { S.midias = mapaDe(s); agendar(); }));
+  if (veMidias || veRel) S.privSubs.push(ouvir(S.db.collection('midias').where('data', '>=', addDias(hoje(), -365)), s => { S.midias = mapaDe(s); agendar(); }));
   else {
     let minhas = new Map(), aprovadas = new Map();
     const juntar = () => { S.midias = new Map([...aprovadas, ...minhas]); agendar(); };
@@ -1310,7 +1313,7 @@ function barras(items, o = {}) {
 /* ================= render ================= */
 let pendente = false;
 function agendar() { if (pendente) return; pendente = true; requestAnimationFrame(() => { pendente = false; render(); }); }
-const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'midias', 'membros', 'produtos', 'acesso'];
+const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'midias', 'membros', 'produtos', 'relatorios', 'acesso'];
 function lerRota() {
   const r = location.hash.slice(1);
   const pqm = r.match(/^presenca\/([^/]+)\/([^/]+)$/);
@@ -1357,6 +1360,7 @@ function renderNav() {
     ['inicio', 'Quem somos', 'info'], ['painel', 'Visão geral', 'home'], ['agenda', 'Agenda', 'cal'], ['atividades', 'Aulas e práticas', 'list'],
     ['praticas', 'Campos de prática', 'hosp'], ['eventos', 'Eventos científicos', 'award'], ['midias', 'Fotos e vídeos', 'camera'], ['membros', 'Membros', 'users'], ['produtos', 'Produtos LAORTT', 'shirt']
   ];
+  if (pode('relatorios')) itens.push(['relatorios', 'Relatório de práticas', 'file']);
   if (vePermissoes()) itens.push(['acesso', 'Permissões', 'shield']);
   $('#nav').replaceChildren(...itens.map(([id, l, i]) => h('a', { href: '#' + id, 'aria-current': S.view === id ? 'page' : null }, ic(i), l)));
 }
@@ -2325,6 +2329,11 @@ async function registrar(a, etapa) {
   const raio = Number(c.raio) || RAIO_PADRAO;
   if (dist > raio + Math.min(prec, 150)) return fim(`Você está a ${fmtDist(dist)} de ${c.nome}. O registro só vale dentro de ${raio} m do local${prec > 50 ? ` (precisão do GPS agora: ${prec} m)` : ''}.`, 'bad');
   const dado = { em: firebase.firestore.FieldValue.serverTimestamp(), local: agora.toISOString(), dist, prec };
+  if (etapa === 'saida') {
+    const md = midiaDaPratica(a, mid, registroDe(a.id, mid));
+    if (!md) return fim('Envie pelo menos uma foto da prática pelo painel antes de registrar a saída.', 'warn');
+    dado.midiaId = md.id;
+  }
   const ref = S.db.doc(`registros/${a.id}_${mid}`);
   try {
     if (etapa === 'entrada') await ref.set({ atividadeId: a.id, campoId: a.campoId, membroId: mid, data: a.data, entrada: dado });
@@ -2333,6 +2342,11 @@ async function registrar(a, etapa) {
   } catch (e) {
     fim(e && e.code === 'permission-denied' ? 'O registro foi recusado: o horário pode ter passado ou as regras novas do banco ainda não foram publicadas. Fale com a direção de práticas.' : 'Falha ao registrar. Verifique a internet e tente de novo.', 'bad');
   }
+}
+/* Foto ou vídeo enviado pelo membro nesta prática depois da entrada (exigido para registrar a saída). */
+function midiaDaPratica(a, mid, r) {
+  const ent = r && r.entrada ? (tsDate(r.entrada.em) || new Date(r.entrada.local)) : null;
+  return [...S.midias.values()].find(x => x.atividadeId === a.id && x.membroId === mid && (!ent || (tsDate(x.criadoEm) || new Date(x.local)) >= ent)) || null;
 }
 /* Bloco de entrada/saída de uma prática do dia, usado na Agenda, na Visão geral e no dia. */
 function blocoPresenca(a, { compacto = false } = {}) {
@@ -2352,7 +2366,11 @@ function blocoPresenca(a, { compacto = false } = {}) {
       h('div', { class: 'pq-etapa' + (r && r.saida ? ' ok' : '') }, h('b', null, 'Saída'), h('span', null, quando(r && r.saida)), h('small', null, js ? `vale das ${hhmm(js.de)} às ${hhmm(js.ate)}` : 'sem horário'))),
     !naLista && etapa ? h('div', { class: 'pq-msg warn' }, 'Seu nome não está na lista deste horário. O registro será feito, mas a direção de práticas vai conferir.') : null,
     g.msg ? h('div', { class: 'pq-msg ' + g.msg.tipo, role: 'status' }, g.msg.texto) : null,
-    etapa ? (aberta || g.ocupado
+    etapa === 'saida' && !g.ocupado && !midiaDaPratica(a, mid, r)
+      ? h('div', { class: 'sec', style: 'gap:8px' },
+          h('div', { class: 'pq-msg warn' }, pontePronta() ? 'Para encerrar a prática, envie pelo menos uma foto (ou vídeo) dela pelo painel. Depois disso o botão de saída aparece aqui.' : 'Para encerrar a prática é preciso enviar uma foto pelo painel, mas o envio para o Google Drive ainda não foi configurado pela presidência.'),
+          pontePronta() && podeEnviarMidia(a) ? h('button', { type: 'button', class: 'btn btn-gold btn-big', id: 'foto-' + a.id, onclick: () => modalEnviarMidias(a) }, ic('camera', 18), h('span', null, 'Enviar foto da prática')) : null)
+      : etapa ? (aberta || g.ocupado
       ? h('button', { type: 'button', class: 'btn btn-primary btn-big', id: 'registrar-' + a.id, disabled: g.ocupado, onclick: () => registrar(a, etapa) },
           ic(g.ocupado ? 'clock' : 'pin', 18), h('span', null, g.ocupado ? 'Conferindo sua localização…' : etapa === 'entrada' ? 'Registrar entrada' : 'Registrar saída'))
       : h('div', { class: 'card-s' }, jan ? (agora < jan.de ? `O registro de ${etapa} abre às ${hhmm(jan.de)}.` : `O prazo para registrar a ${etapa} terminou às ${hhmm(jan.ate)}. Fale com a direção de práticas.`) : 'Esta prática não tem horário cadastrado.'))
@@ -2661,7 +2679,141 @@ function cardDrive(ed) {
     h('div', { class: 'fld-h' }, 'A pasta fica privada na conta da liga. Para a Diretoria de marketing abrir os arquivos no Drive, compartilhe a pasta com os e-mails dela pelo próprio Drive.')), { id: 'drive' });
 }
 
-const VIEWS = { midias: vMidias, presenca: vPresenca, eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
+/* ================= relatório de práticas por ligante ================= */
+/* Diretoria de práticas e Presidência (permissão "relatorios") veem as práticas de cada membro
+   e emitem um relatório com o selo da liga para comprovação. */
+function praticasDoMembro(mid, de, ate) {
+  const t = hoje(), linhas = [];
+  for (const a of atividadesOrdenadas()) {
+    if (a.tipo !== 'pratica' || a.status === 'cancelada' || a.data > t) continue;
+    if (de && a.data < de) continue;
+    if (ate && a.data > ate) continue;
+    const reg = registroDe(a.id, mid);
+    const pres = (a.presencas || {})[mid];
+    const fotos = [...S.midias.values()].filter(x => x.atividadeId === a.id && x.membroId === mid).length;
+    const naLista = (a.escalados || []).includes(mid) || (S.checkins.get(`${a.id}_${mid}`) || {}).status === 'confirmado';
+    if (!naLista && !reg && !pres && !fotos) continue;
+    const completo = !!(reg && reg.entrada && reg.saida);
+    let sit, presente = false;
+    if (pres === 'P') { sit = 'Presente'; presente = true; }
+    else if (pres === 'F') sit = 'Falta';
+    else if (pres === 'J') sit = 'Falta justificada';
+    else if (completo) { sit = 'Presente (localização)'; presente = true; }
+    else if (reg && reg.entrada) sit = 'Registro incompleto';
+    else sit = 'Sem registro';
+    linhas.push({ a, reg, fotos, sit, presente, min: presente ? minutosRegistro(reg, a) : 0, campo: S.campos.get(a.campoId) || {} });
+  }
+  return linhas;
+}
+function totaisDe(linhas) {
+  const t = { praticas: 0, min: 0, faltas: 0, justificadas: 0, incompletas: 0, fotos: 0, total: linhas.length };
+  for (const l of linhas) {
+    if (l.presente) { t.praticas++; t.min += l.min; }
+    if (l.sit === 'Falta' || l.sit === 'Sem registro') t.faltas++;
+    if (l.sit === 'Falta justificada') t.justificadas++;
+    if (l.sit === 'Registro incompleto') t.incompletas++;
+    t.fotos += l.fotos;
+  }
+  return t;
+}
+const pillSit = sit => h('span', { class: 'pill ' + (sit.startsWith('Presente') ? 's-realizada' : sit === 'Falta justificada' ? 's-pendente' : sit === 'Registro incompleto' ? 's-hoje' : 's-cancelada') }, sit);
+function htmlRelatorio(m, linhas, tot, de, ate, codigo) {
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const logo = $('.seal').getAttribute('src');
+  const per = `${fmtCurta(de)} a ${fmtCurta(ate)}`;
+  const emitido = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const quando = x => x ? hhmm(tsDate(x.em) || new Date(x.local)) : '—';
+  const rows = linhas.map(l => `<tr><td>${esc(fmtCurta(l.a.data))}</td><td>${esc(tituloAt(l.a))}${l.a.local ? `<br><small>${esc(l.a.local)}</small>` : ''}</td><td>${esc(horario(l.a))}</td><td>${quando(l.reg && l.reg.entrada)}</td><td>${quando(l.reg && l.reg.saida)}</td><td>${l.presente ? esc(fmtHoras(l.min)) : '—'}</td><td>${l.fotos || '—'}</td><td class="${l.presente ? 'ok' : ''}">${esc(l.sit)}</td></tr>`).join('');
+  return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório de práticas – ${esc(m.nome)}</title>
+<style>@page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Georgia,"Times New Roman",serif;color:#13224a;margin:0;padding:24px}
+.dica{font-family:system-ui,sans-serif;background:#f5eedd;border:1px solid #d9c08a;padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:18px}
+@media print{.dica{display:none}body{padding:0}}
+.head{display:flex;align-items:center;gap:18px}.head img{width:86px;height:86px;border-radius:50%}
+.head h1{font-weight:400;letter-spacing:.14em;font-size:24px;margin:0}.head p{margin:4px 0 0;font-family:system-ui,sans-serif;font-size:12.5px;color:#44506a}
+.rule{height:3px;background:#c9a55c;margin:16px 0 2px}.rule2{height:1px;background:#d9c08a;margin-bottom:16px}
+h2{font-weight:400;font-size:21px;margin:0 0 6px}.dados{font-family:system-ui,sans-serif;font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}
+.dados b{color:#68728a;font-weight:600}.texto{font-size:14.5px;line-height:1.6;margin:16px 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 16px;font-family:system-ui,sans-serif}.kpis div{border:1px solid #d9c08a;border-radius:8px;padding:8px 10px}
+.kpis strong{display:block;font-family:Georgia,serif;font-size:22px;font-weight:400}.kpis span{font-size:11.5px;color:#68728a}
+table{width:100%;border-collapse:collapse;font-family:system-ui,sans-serif;font-size:11.5px}th{text-align:left;font-size:10.5px;letter-spacing:.05em;color:#68728a;border-bottom:1.5px solid #13224a;padding:6px 4px;text-transform:uppercase}
+td{border-bottom:1px solid #dde1ea;padding:6px 4px;vertical-align:top}td small{color:#68728a}td.ok{color:#1d7a3b;font-weight:600}
+.ass{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:46px;font-family:system-ui,sans-serif;font-size:12px;text-align:center}.ass div{border-top:1px solid #13224a;padding-top:6px}
+footer{margin-top:26px;font-family:system-ui,sans-serif;font-size:11px;color:#68728a;border-top:1px solid #dde1ea;padding-top:8px}</style></head><body>
+<div class="dica">Para salvar em PDF ou imprimir, use Ctrl+P (ou Cmd+P no Mac). Este aviso não sai na impressão.</div>
+<div class="head"><img src="${logo}" alt=""><div><h1>RELATÓRIO DE PRÁTICAS</h1><p>Liga Acadêmica de Ortopedia, Traumatologia e Trauma – LAORTT · UNIMA · Maceió, Alagoas</p></div></div>
+<div class="rule"></div><div class="rule2"></div>
+<h2>${esc(m.nome)}</h2>
+<div class="dados"><div><b>Categoria:</b> Membro ${esc(CATEG[m.categoria] || '')}${m.periodo ? ' · ' + esc(m.periodo) : ''}</div><div><b>Período do relatório:</b> ${esc(per)}</div><div><b>Emitido em:</b> ${esc(emitido)}</div><div><b>Código de verificação:</b> ${esc(codigo)}</div></div>
+<p class="texto">Declaramos, para os devidos fins, que o(a) ligante <b>${esc(m.nome)}</b> participou de <b>${tot.praticas} ${tot.praticas === 1 ? 'atividade prática' : 'atividades práticas'}</b> da LAORTT no período de ${esc(per)}${tot.min ? `, totalizando <b>${esc(fmtHoras(tot.min))}</b> de permanência registrada por localização` : ''}, conforme relacionado abaixo.</p>
+<div class="kpis"><div><strong>${tot.praticas}</strong><span>práticas com presença</span></div><div><strong>${esc(fmtHoras(tot.min))}</strong><span>horas registradas</span></div><div><strong>${tot.faltas}</strong><span>faltas</span></div><div><strong>${tot.justificadas}</strong><span>faltas justificadas</span></div></div>
+<table><thead><tr><th>Data</th><th>Campo de prática</th><th>Horário</th><th>Entrada</th><th>Saída</th><th>Horas</th><th>Fotos</th><th>Situação</th></tr></thead><tbody>${rows || '<tr><td colspan="8">Nenhuma prática no período.</td></tr>'}</tbody></table>
+<div class="ass"><div>Presidência da LAORTT</div><div>Diretoria de Práticas da LAORTT</div></div>
+<footer>Entrada e saída registradas pelo painel da liga com conferência de localização e horário do servidor; presenças validadas pela direção de práticas. Emitido por ${esc(quemSou())} · código ${esc(codigo)}.</footer>
+</body></html>`;
+}
+async function emitirRelatorio(m, linhas, tot, de, ate) {
+  const codigo = `LAORTT-${hoje().replace(/-/g, '')}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  try {
+    await S.db.doc(`relatorios/${codigo}`).set({ membroId: m.id, de, ate, praticas: tot.praticas, minutos: tot.min, faltas: tot.faltas, emitidoPor: quemSou(), emitidoEm: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch (e) { if (e && e.code === 'permission-denied') { toast('O banco recusou registrar o relatório. Publique o firestore.rules mais recente.', 'bad'); return; } }
+  baixar(`relatorio-praticas-${slug(m.nome)}-${de}-a-${ate}.html`, htmlRelatorio(m, linhas, tot, de, ate, codigo));
+  toast(`Relatório gerado (código ${codigo}). Abra o arquivo e use Ctrl+P para salvar em PDF.`, 'good');
+}
+function vRelatorios() {
+  const f = S.fRel || (S.fRel = { mid: '', de: hoje().slice(0, 4) + '-01-01', ate: hoje(), cat: 'todos' });
+  const set = (k, v) => { f[k] = v; agendar(); };
+  const filtros = h('div', { class: 'filters' },
+    sel('rel-membro', f.mid, [['', 'Todos os membros (resumo)'], ...membrosAtivos().map(m => [m.id, m.nome])], { aria: 'Membro', onchange: e => set('mid', e.target.value) }),
+    h('label', { class: 'fld', style: 'flex-direction:row;align-items:center;gap:6px' }, h('span', { class: 'fld-l' }, 'De'), inp('rel-de', f.de, { type: 'date', onchange: e => set('de', e.target.value) })),
+    h('label', { class: 'fld', style: 'flex-direction:row;align-items:center;gap:6px' }, h('span', { class: 'fld-l' }, 'Até'), inp('rel-ate', f.ate, { type: 'date', onchange: e => set('ate', e.target.value) })),
+    !f.mid ? seg([['todos', 'Todos'], ['junior', 'Júnior'], ['pleno', 'Plenos']], f.cat, v => set('cat', v), { label: 'Categoria' }) : null);
+  const head = pageHead('Relatório de práticas', 'Diretoria de práticas e Presidência', null);
+  if (!validISO(f.de) || !validISO(f.ate) || f.ate < f.de) return h('div', { class: 'page' }, head, filtros, h('div', { class: 'note gold' }, 'Escolha um período válido.'));
+  if (!f.mid) {
+    const tbody = h('tbody');
+    for (const m of membrosAtivos().filter(m => f.cat === 'todos' || m.categoria === f.cat)) {
+      const t = totaisDe(praticasDoMembro(m.id, f.de, f.ate));
+      const abrir = () => set('mid', m.id);
+      tbody.append(h('tr', { tabindex: '0', onclick: abrir, onkeydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } } },
+        h('td', null, h('div', { class: 'nm' }, m.nome)), h('td', null, CATEG[m.categoria] || '—'),
+        h('td', { class: 'num' }, t.praticas), h('td', { class: 'num' }, fmtHoras(t.min)), h('td', { class: 'num' }, t.faltas), h('td', { class: 'num' }, t.justificadas), h('td', { class: 'num' }, t.incompletas), h('td', { class: 'num' }, t.fotos)));
+    }
+    return h('div', { class: 'page' }, head, filtros,
+      h('section', { class: 'card', id: 'rel-resumo' }, h('div', { class: 'card-h' }, h('div', null, h('h2', { class: 'card-t' }, 'Resumo por membro'), h('div', { class: 'card-s' }, `${fmtCurta(f.de)} a ${fmtCurta(f.ate)} · clique em um membro para ver as práticas e emitir o relatório`))),
+        h('div', { class: 'card-b' }, h('div', { class: 'tbl-wrap' }, h('table', { class: 'tbl' }, h('thead', null, h('tr', null, ['Membro', 'Categoria', 'Práticas', 'Horas', 'Faltas', 'Justificadas', 'Incompletas', 'Fotos'].map(c => h('th', { scope: 'col' }, c)))), tbody)))));
+  }
+  const m = S.membros.get(f.mid);
+  if (!m) { f.mid = ''; return vRelatorios(); }
+  const linhas = praticasDoMembro(m.id, f.de, f.ate), tot = totaisDe(linhas);
+  const quando = x => x ? hhmm(tsDate(x.em) || new Date(x.local)) : '—';
+  const tbody = h('tbody');
+  for (const l of linhas.slice().reverse()) {
+    tbody.append(h('tr', { tabindex: '0', onclick: () => gavetaAtividade(l.a.id), onkeydown: e => { if (e.key === 'Enter') gavetaAtividade(l.a.id); } },
+      h('td', { class: 'num' }, fmtCurta(l.a.data)), h('td', null, h('div', { class: 'nm' }, tituloAt(l.a)), l.a.local ? h('div', { class: 'nm-s' }, l.a.local) : null),
+      h('td', { class: 'num' }, horario(l.a)), h('td', { class: 'num' }, quando(l.reg && l.reg.entrada)), h('td', { class: 'num' }, quando(l.reg && l.reg.saida)),
+      h('td', { class: 'num' }, l.presente ? fmtHoras(l.min) : '—'), h('td', { class: 'num' }, l.fotos || '—'), h('td', null, pillSit(l.sit))));
+  }
+  const kpi = (l, v, s) => h('div', { class: 'card kpi' }, h('div', { class: 'kpi-l' }, l), h('div', { class: 'kpi-v num' }, v), h('div', { class: 'kpi-s' }, s));
+  const csvRel = () => {
+    const rows = [['Data', 'Campo de prática', 'Local', 'Horário', 'Entrada', 'Saída', 'Horas', 'Fotos', 'Situação']];
+    for (const l of linhas) rows.push([fmtCurta(l.a.data), tituloAt(l.a), l.a.local || '', horario(l.a), quando(l.reg && l.reg.entrada), quando(l.reg && l.reg.saida), l.presente ? fmtHoras(l.min) : '', l.fotos || 0, l.sit]);
+    baixar(`praticas-${slug(m.nome)}-${f.de}-a-${f.ate}.csv`, csv(rows));
+  };
+  return h('div', { class: 'page' },
+    pageHead(m.nome, `Relatório de práticas · Membro ${CATEG[m.categoria] || ''}`, [
+      btn('Todos os membros', () => set('mid', ''), { icon: 'left' }),
+      btn('Exportar planilha', csvRel, { icon: 'download' }),
+      btn('Gerar relatório com selo', () => emitirRelatorio(m, linhas, tot, f.de, f.ate), { kind: 'primary', icon: 'file', id: 'rel-emitir' })]),
+    filtros,
+    h('div', { class: 'kpis' }, kpi('Práticas com presença', tot.praticas, `de ${plural(tot.total, 'prática', 'práticas')} no período`), kpi('Horas registradas', fmtHoras(tot.min), 'entrada e saída por localização'),
+      kpi('Faltas', tot.faltas, tot.justificadas ? `+ ${plural(tot.justificadas, 'justificada', 'justificadas')}` : 'sem justificadas'), kpi('Fotos e vídeos', tot.fotos, tot.incompletas ? `${plural(tot.incompletas, 'registro incompleto', 'registros incompletos')}` : 'enviados pelo painel')),
+    h('section', { class: 'card', id: 'rel-praticas' }, linhas.length ? h('div', { class: 'tbl-wrap' }, h('table', { class: 'tbl' },
+      h('thead', null, h('tr', null, ['Data', 'Campo de prática', 'Horário', 'Entrada', 'Saída', 'Horas', 'Fotos', 'Situação'].map(c => h('th', { scope: 'col' }, c)))), tbody))
+      : h('div', { class: 'empty' }, 'Nenhuma prática deste membro no período.')),
+    h('div', { class: 'fld-h' }, 'Presença: vale a marcação da direção (P, F ou J); sem marcação, conta como presente quem registrou entrada e saída por localização. O relatório baixado tem o selo da liga, campos de assinatura e um código de verificação registrado no painel.'));
+}
+
+const VIEWS = { relatorios: vRelatorios, midias: vMidias, presenca: vPresenca, eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
 
 /* ================= gaveta e modal ================= */
 let focoAntes = null;
