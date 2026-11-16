@@ -559,6 +559,30 @@ a.btn{text-decoration:none}
 .qr-prev{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .qr-prev svg{width:132px;height:132px;background:#fff;border-radius:8px;border:1px solid var(--line);flex:none}
 
+
+/* ---------- fotos e vídeos ---------- */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.gal-i{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column}
+.gal-th{aspect-ratio:1;background:var(--surface-2);display:grid;place-items:center;position:relative;color:var(--muted)}
+.gal-th img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-th .play{position:absolute;inset:auto 6px 6px auto;background:rgba(8,14,30,.7);color:#fff;border-radius:999px;font-size:10.5px;font-weight:700;padding:1px 7px}
+.gal-tx{padding:6px 8px;font-size:11.5px;line-height:1.35;display:flex;flex-direction:column;gap:3px}
+.gal-tx b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-a{display:flex;gap:2px;flex-wrap:wrap;padding:0 4px 6px}
+.gal-a .btn{padding:3px 6px;font-size:11.5px}
+.up-lista{display:flex;flex-direction:column;gap:8px}
+.up-i{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.up-i img,.up-i .ph{width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--surface-2);display:grid;place-items:center;color:var(--muted)}
+.up-n{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-bar{height:5px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:4px}
+.up-bar span{display:block;height:100%;background:var(--gold);transition:width .2s}
+.up-i.ok .up-bar span{background:var(--good)}
+.up-i.erro .up-bar span{background:var(--bad)}
+.up-st{font-size:12px;color:var(--muted);white-space:nowrap}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45}
+.chk input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.reg.mid{color:var(--brand-ink)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1100px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -784,6 +808,7 @@ const ICONS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
   upload: '<path d="M12 21V9m0 0-4 4m4-4 4 4M4 3h16"/>',
   award: '<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/>',
+  camera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
   shirt: '<path d="M20.4 6.6 16 4l-1.5 1.5a3.5 3.5 0 0 1-5 0L8 4 3.6 6.6a1 1 0 0 0-.4 1.3l1.6 3a1 1 0 0 0 1.3.4L7 10.8V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9.2l.9.5a1 1 0 0 0 1.3-.4l1.6-3a1 1 0 0 0-.4-1.3z"/>',
   hosp: '<path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16M2 21h20M12 7v6M9 10h6"/>',
   edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
@@ -834,14 +859,16 @@ const MODULOS = [
   ['membros', 'Membros', 'Cadastro e dados de contato'],
   ['eventos', 'Eventos científicos', 'Cadastrar e editar eventos'],
   ['produtos', 'Produtos LAORTT', 'Ver e editar os pedidos de todos os membros'],
-  ['checkins', 'Check-ins', 'Confirmar, remover e reorganizar os nomes que os membros colocam na agenda']
+  ['checkins', 'Check-ins', 'Confirmar, remover e reorganizar os nomes que os membros colocam na agenda'],
+  ['midias', 'Fotos e vídeos', 'Ver todos os envios, aprovar para divulgação e remover']
 ];
-const PAPEIS = ['presidencia', 'diretoria', 'diretorPraticas', 'coordenacao', 'membro'];
+const PAPEIS = ['presidencia', 'diretoria', 'diretorPraticas', 'marketing', 'coordenacao', 'membro'];
 const CONFIG_PADRAO = {
   papeis: {
     presidencia: { nome: 'Presidência', aulas: true, praticas: true, presencas: true, campos: true, membros: true, eventos: true, produtos: true, checkins: true },
     diretoria: { nome: 'Diretoria', aulas: true, praticas: true, presencas: true, campos: true, membros: false, eventos: true, produtos: true, checkins: false },
     diretorPraticas: { nome: 'Diretoria de práticas', aulas: false, praticas: true, presencas: true, campos: true, membros: false, eventos: false, produtos: false, checkins: true },
+    marketing: { nome: 'Diretoria de marketing', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false, checkins: false, midias: true },
     coordenacao: { nome: 'Coordenação de práticas', aulas: false, praticas: true, presencas: true, campos: false, membros: false, eventos: false, produtos: false, checkins: false },
     membro: { nome: 'Membro (consulta)', aulas: false, praticas: false, presencas: false, campos: false, membros: false, eventos: false, produtos: false, checkins: false }
   },
@@ -876,7 +903,7 @@ const S = {
   authUser: null, email: null, meuAcesso: null, acessoCarregado: true,
   instalado: null, semRegras: false,
   semDb: false, semConfig: false, lento: false, somenteLeitura: false,
-  checkins: new Map(), registros: new Map(), camposQr: new Map(), pq: null,
+  checkins: new Map(), registros: new Map(), camposQr: new Map(), pq: null, midias: new Map(), drive: null, fMd: 'todas', driveForm: null,
   eventos: new Map(), produtos: new Map(), fotos: new Map(), fEv: 'proximos', rascunhos: {}, gavetaPedido: null,
   membros: new Map(), atividades: new Map(), atRaw: new Map(), presRaw: new Map(), campos: new Map(), restrito: new Map(), acessos: new Map(),
   configRaw: null, config: mergeConfig(null),
@@ -1058,7 +1085,7 @@ function migrarConfig(r) {
   // painéis configurados antes das abas novas: grava as permissões padrão de Eventos e Produtos uma única vez
   if (migrado || r !== 'presidencia' || !S.configRaw || !S.configRaw.papeis) return;
   const d = S.configRaw.papeis.diretoria || {};
-  if ('eventos' in d && 'produtos' in d && 'checkins' in d && S.configRaw.papeis.diretorPraticas) return;
+  if ('eventos' in d && 'produtos' in d && 'checkins' in d && S.configRaw.papeis.diretorPraticas && S.configRaw.papeis.marketing) return;
   migrado = true;
   const novo = clone({ papeis: S.config.papeis, exibicao: S.config.exibicao, regras: S.config.regras, produtos: S.config.produtos, atualizadoEm: new Date().toISOString() });
   gravar('config/papeis', novo).catch(() => { migrado = false; });
@@ -1068,7 +1095,7 @@ function pararPrivados() {
   S.privSubs = []; chavePriv = '';
   S.presRaw = new Map(); S.restrito = new Map(); S.acessos = new Map();
   S.membros = new Map(); S.atRaw = new Map(); S.campos = new Map();
-  S.eventos = new Map(); S.produtos = new Map(); S.fotos = new Map(); S.rascunhos = {}; S.checkins = new Map(); S.registros = new Map(); S.camposQr = new Map();
+  S.eventos = new Map(); S.produtos = new Map(); S.fotos = new Map(); S.rascunhos = {}; S.checkins = new Map(); S.registros = new Map(); S.camposQr = new Map(); S.midias = new Map();
   S.loaded.membros = S.loaded.atividades = S.loaded.campos = false; S.lento = false;
   clearTimeout(S.timerLento);
   mesclar();
@@ -1081,7 +1108,8 @@ function assinarPrivados() {
   const mid = (S.meuAcesso && S.meuAcesso.membroId) || '';
   const vePres = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].presencas);
   const veCampos = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].campos);
-  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}|${vePres}|${veCampos}`;
+  const veMidias = r === 'presidencia' || !!(r && S.config.papeis[r] && S.config.papeis[r].midias);
+  const chave = `${S.email}|${r}|${verRestrito}|${gestorProd}|${mid}|${vePres}|${veCampos}|${veMidias}`;
   migrarConfig(r);
   if (chave === chavePriv) return;
   pararPrivados(); chavePriv = chave;
@@ -1102,6 +1130,13 @@ function assinarPrivados() {
   if (vePres) S.privSubs.push(ouvir(S.db.collection('registros').where('data', '>=', addDias(hoje(), -365)), s => { S.registros = mapaDe(s); agendar(); }));
   else if (mid) S.privSubs.push(ouvir(S.db.collection('registros').where('membroId', '==', mid), s => { S.registros = mapaDe(s); agendar(); }));
   if (veCampos) S.privSubs.push(ouvir(S.db.collection('camposQr'), s => { S.camposQr = mapaDe(s); agendar(); }));
+  if (veMidias) S.privSubs.push(ouvir(S.db.collection('midias').where('data', '>=', addDias(hoje(), -365)), s => { S.midias = mapaDe(s); agendar(); }));
+  else {
+    let minhas = new Map(), aprovadas = new Map();
+    const juntar = () => { S.midias = new Map([...aprovadas, ...minhas]); agendar(); };
+    if (mid) S.privSubs.push(ouvir(S.db.collection('midias').where('membroId', '==', mid), s => { minhas = mapaDe(s); juntar(); }));
+    S.privSubs.push(ouvir(S.db.collection('midias').where('status', '==', 'divulgacao'), s => { aprovadas = mapaDe(s); juntar(); }));
+  }
   S.privSubs.push(ouvir(S.db.collection('presencas'), snap => { S.presRaw = mapaDe(snap); mesclar(); agendar(); }));
   if (verRestrito) S.privSubs.push(ouvir(S.db.collection('restrito'), snap => { S.restrito = mapaDe(snap); agendar(); }));
   if (r === 'presidencia') S.privSubs.push(ouvir(S.db.collection('acesso'), snap => { S.acessos = mapaDe(snap); agendar(); }));
@@ -1118,6 +1153,7 @@ function trocarAcesso() {
   if (!S.email) { S.acessoCarregado = true; return; }
   pararConfig.push(ouvir(S.db.doc('config/papeis'), s => { S.configRaw = s.exists ? s.data() : null; S.config = mergeConfig(S.configRaw); S.loaded.config = true; assinarPrivados(); agendar(); }, e => { negado(e); S.loaded.config = true; }));
   pararConfig.push(ouvir(S.db.doc('config/instalacao'), s => { S.instalado = !!s.exists; agendar(); }, negado));
+  pararConfig.push(ouvir(S.db.doc('config/drive'), s => { S.drive = s.exists ? s.data() : null; agendar(); }));
   S.acessoCarregado = false;
   pararAcesso = ouvir(S.db.doc('acesso/' + S.email), snap => {
     S.meuAcesso = snap.exists ? snap.data() : null;
@@ -1281,7 +1317,7 @@ function barras(items, o = {}) {
 /* ================= render ================= */
 let pendente = false;
 function agendar() { if (pendente) return; pendente = true; requestAnimationFrame(() => { pendente = false; render(); }); }
-const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'membros', 'produtos', 'acesso'];
+const ROTAS = ['inicio', 'painel', 'agenda', 'atividades', 'praticas', 'eventos', 'midias', 'membros', 'produtos', 'acesso'];
 function lerRota() {
   const r = location.hash.slice(1);
   const pqm = r.match(/^presenca\/([^/]+)\/([^/]+)$/);
@@ -1290,7 +1326,7 @@ function lerRota() {
     S.view = 'presenca'; return;
   }
   S.view = ROTAS.includes(r) ? r : (r ? 'painel' : 'inicio');
-  if (S.view === 'acesso' && !vePermissoes()) S.view = 'painel';
+  if (S.view === 'acesso' && S.meuAcesso && !vePermissoes()) S.view = 'painel';
 }
 window.addEventListener('hashchange', () => { lerRota(); render(); window.scrollTo(0, 0); });
 
@@ -1326,7 +1362,7 @@ function render() {
 function renderNav() {
   const itens = [
     ['inicio', 'Quem somos', 'info'], ['painel', 'Visão geral', 'home'], ['agenda', 'Agenda', 'cal'], ['atividades', 'Aulas e práticas', 'list'],
-    ['praticas', 'Campos de prática', 'hosp'], ['eventos', 'Eventos científicos', 'award'], ['membros', 'Membros', 'users'], ['produtos', 'Produtos LAORTT', 'shirt']
+    ['praticas', 'Campos de prática', 'hosp'], ['eventos', 'Eventos científicos', 'award'], ['midias', 'Fotos e vídeos', 'camera'], ['membros', 'Membros', 'users'], ['produtos', 'Produtos LAORTT', 'shirt']
   ];
   if (vePermissoes()) itens.push(['acesso', 'Permissões', 'shield']);
   $('#nav').replaceChildren(...itens.map(([id, l, i]) => h('a', { href: '#' + id, 'aria-current': S.view === id ? 'page' : null }, ic(i), l)));
@@ -1803,11 +1839,11 @@ function vAcesso() {
       onchange: e => { const v = Math.min(100, Math.max(0, Number(e.target.value) || 0)); salvarCfg(n => { n.regras.freqMinima = v; }, 'Frequência mínima atualizada.'); } })),
     sw('abona', 'Falta justificada não conta contra a frequência', cfg.regras.justificadaAbona, e => { const v = e.target.checked; salvarCfg(n => { n.regras.justificadaAbona = v; }, 'Regra atualizada.'); }, !ed)), { id: 'regras' });
   const previa = card('Ver o painel como', 'Confira o que cada papel enxerga antes de liberar', h('div', { class: 'preview-roles' },
-    ['diretoria', 'diretorPraticas', 'coordenacao', 'membro'].map(p => btn(nomePapel(p), () => { S.previa = p; location.hash = 'painel'; agendar(); }, { icon: 'eye', sm: true }))), { id: 'previa' });
+    ['diretoria', 'diretorPraticas', 'marketing', 'coordenacao', 'membro'].map(p => btn(nomePapel(p), () => { S.previa = p; location.hash = 'painel'; agendar(); }, { icon: 'eye', sm: true }))), { id: 'previa' });
 
   return h('div', { class: 'page' },
     pageHead('Permissões', 'Presidência', null),
-    camadas, pessoasCard, matriz,
+    camadas, pessoasCard, matriz, cardDrive(ed),
     h('div', { class: 'cols' }, h('div', { class: 'stack' }, exib), h('div', { class: 'stack' }, regras, previa)));
 }
 
@@ -2188,7 +2224,8 @@ function gavetaDia(iso) {
     h('div', { class: 'slot-m' }, [a.local, a.responsavel ? (a.tipo === 'aula' ? 'Palestrante: ' : 'Preceptor: ') + a.responsavel : '', a.publico && a.publico !== 'todos' ? PUBLICOS[a.publico] : ''].filter(Boolean).join(' · ')),
     h('div', { class: 'slot-v' }, vagasInfo(a), (pode(a.tipo === 'aula' ? 'aulas' : 'praticas') || gestorCheckin()) ? btn('Detalhes', () => { S.diaAberto = null; gavetaAtividade(a.id, { foco: 'checkin' }); }, { kind: 'text', sm: true }) : null),
     h('div', { class: 'slot-eu' }, minhaAcao(a)),
-    listaNomes(a)));
+    listaNomes(a),
+    secaoMidias(a)));
   const evCards = evs.map(e => h('article', { class: 'slot k-evento' }, h('div', { class: 'slot-h' }, h('div', { class: 'slot-hora' }, ic('award', 16), 'Evento científico')),
     h('div', { class: 'slot-t' }, e.nome), h('div', { class: 'slot-m' }, [periodoEvento(e), e.local].filter(Boolean).join(' · ')),
     linkOk(e.link) ? h('a', { class: 'btn btn-ghost btn-sm', href: e.link.trim(), target: '_blank', rel: 'noopener noreferrer', style: 'align-self:flex-start' }, 'Acessar o evento') : null));
@@ -2403,7 +2440,224 @@ function aplicarRegistros(a, f) {
   return n;
 }
 
-const VIEWS = { presenca: vPresenca, eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
+/* ================= fotos e vídeos → Google Drive da liga ================= */
+/* O painel pede à ponte (Apps Script na conta da liga) um endereço de envio; o arquivo vai do
+   aparelho direto para o Drive, em partes. Depois o painel registra o envio (quem, quando, miniatura). */
+const midiasDe = aid => [...S.midias.values()].filter(x => x.atividadeId === aid).sort((x, y) => String(y.local || '').localeCompare(String(x.local || '')));
+const pontePronta = () => !!(S.drive && S.drive.url);
+const gestorMidias = () => pode('midias');
+function janelaEnvio(a) { const t = hoje(); return a.data <= t && a.data >= addDias(t, -7); }
+function podeEnviarMidia(a) { return !!(S.db && !S.previa && meuMembroId() && a && a.tipo === 'pratica' && a.status !== 'cancelada' && janelaEnvio(a)); }
+async function chamarPonte(acao, dados = {}) {
+  if (!pontePronta()) throw new Error('A integração com o Google Drive ainda não foi configurada em Permissões.');
+  const idToken = await S.authUser.getIdToken();
+  let r;
+  try { r = await fetch(S.drive.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao, idToken, origem: location.origin, ...dados }) }); }
+  catch { throw new Error('Não foi possível falar com a ponte do Drive. Verifique a internet ou o endereço da ponte em Permissões.'); }
+  let j; try { j = await r.json(); } catch { throw new Error('A ponte do Drive respondeu de forma inesperada. Confira se ela foi implantada para "Qualquer pessoa".'); }
+  if (!j.ok) throw new Error(j.erro || 'A ponte do Drive recusou o pedido.');
+  return j;
+}
+async function enviarEmPartes(url, file, aoProgredir) {
+  const PARTE = 8 * 1024 * 1024; // múltiplo de 256 KB, como o Drive exige
+  let ini = 0, tentativas = 0;
+  while (true) {
+    const fim = Math.min(ini + PARTE, file.size);
+    let r;
+    try { r = await fetch(url, { method: 'PUT', headers: { 'Content-Range': `bytes ${ini}-${fim - 1}/${file.size}` }, body: file.slice(ini, fim) }); }
+    catch (e) { if (++tentativas > 3) throw new Error('A conexão caiu durante o envio.'); await new Promise(res => setTimeout(res, 1500 * tentativas)); continue; }
+    tentativas = 0;
+    if (r.status === 308) { const rg = r.headers.get('Range'); ini = rg ? Number(rg.split('-')[1]) + 1 : fim; aoProgredir(ini / file.size); continue; }
+    if (r.ok) { aoProgredir(1); try { return await r.json(); } catch { return {}; } }
+    throw new Error(`O Drive recusou o envio (${r.status}).`);
+  }
+}
+function miniatura(file) {
+  return new Promise(res => {
+    const url = URL.createObjectURL(file);
+    const fechar = v => { URL.revokeObjectURL(url); res(v); };
+    const desenhar = (src, w, h2) => {
+      const L = 320, k = Math.min(1, L / Math.max(w, h2));
+      const c = document.createElement('canvas'); c.width = Math.round(w * k) || 1; c.height = Math.round(h2 * k) || 1;
+      c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+      return c.toDataURL('image/jpeg', 0.7);
+    };
+    if (/^image\//.test(file.type)) {
+      const img = new Image();
+      img.onload = () => { try { fechar(desenhar(img, img.naturalWidth, img.naturalHeight)); } catch { fechar(''); } };
+      img.onerror = () => fechar('');
+      img.src = url;
+    } else if (/^video\//.test(file.type)) {
+      const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'metadata';
+      const t = setTimeout(() => fechar(''), 6000);
+      v.onloadeddata = () => { try { v.currentTime = Math.min(1, (v.duration || 2) / 2); } catch { clearTimeout(t); fechar(''); } };
+      v.onseeked = () => { clearTimeout(t); try { fechar(desenhar(v, v.videoWidth, v.videoHeight)); } catch { fechar(''); } };
+      v.onerror = () => { clearTimeout(t); fechar(''); };
+      v.src = url;
+    } else fechar('');
+  });
+}
+const fmtTam = b => b >= 1073741824 ? (b / 1073741824).toFixed(1).replace('.', ',') + ' GB' : b >= 1048576 ? Math.round(b / 1048576) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+function modalEnviarMidias(a) {
+  if (!pontePronta()) { toast('A integração com o Google Drive ainda não foi configurada. A presidência faz isso em Permissões.', 'warn'); return; }
+  const st = { ok1: false, ok2: false, arquivos: [], enviando: false };
+  const membro = S.membros.get(meuMembroId());
+  function desenhar() {
+    const total = st.arquivos.reduce((s, x) => s + x.file.size, 0);
+    const corpo = [
+      h('div', { class: 'card-s' }, `${tituloAt(a)} · ${fmt(a.data, { weekday: 'long', day: 'numeric', month: 'long' })}. Os arquivos vão para a pasta desta prática no Google Drive da liga.`),
+      h('div', { class: 'sec', style: 'gap:10px' },
+        h('label', { class: 'chk' }, h('input', { type: 'checkbox', id: 'md-ok1', checked: st.ok1, disabled: st.enviando, onchange: e => { st.ok1 = e.target.checked; desenhar(); } }),
+          h('span', null, h('b', null, 'Nenhum paciente pode ser identificado: '), 'sem rosto, nome, prontuário, pulseira, tela de monitor ou exame com dados.')),
+        h('label', { class: 'chk' }, h('input', { type: 'checkbox', id: 'md-ok2', checked: st.ok2, disabled: st.enviando, onchange: e => { st.ok2 = e.target.checked; desenhar(); } }),
+          h('span', null, h('b', null, 'O local permite fotografia '), 'e as pessoas que aparecem concordaram com o registro.'))),
+      st.ok1 && st.ok2 && !st.enviando ? h('label', { class: 'btn btn-ghost upl', style: 'align-self:flex-start' }, ic('upload', 17), h('span', null, st.arquivos.length ? 'Escolher mais arquivos' : 'Escolher fotos e vídeos'),
+        h('input', { type: 'file', id: 'md-arquivos', multiple: true, accept: 'image/*,video/*', onchange: async e => {
+          const novos = [...e.target.files].filter(f => /^(image|video)\//.test(f.type));
+          if (novos.length < e.target.files.length) toast('Só fotos e vídeos são aceitos.', 'warn');
+          for (const f of novos) {
+            if (f.size > 1024 * 1024 * 1024) { toast(`${f.name} passa de 1 GB e não será enviado.`, 'warn'); continue; }
+            if (st.arquivos.length >= 20) { toast('Envie no máximo 20 arquivos por vez.', 'warn'); break; }
+            st.arquivos.push({ file: f, thumb: '', prog: 0, estado: 'pronto', msg: '' });
+          }
+          desenhar();
+          for (const x of st.arquivos) if (!x.thumb) { x.thumb = await miniatura(x.file) || ''; desenhar(); }
+        } })) : null,
+      st.arquivos.length ? h('div', { class: 'up-lista', id: 'md-lista' }, st.arquivos.map((x, i) => h('div', { class: 'up-i' + (x.estado === 'ok' ? ' ok' : x.estado === 'erro' ? ' erro' : '') },
+        x.thumb ? h('img', { src: x.thumb, alt: '' }) : h('span', { class: 'ph' }, ic(/^video/.test(x.file.type) ? 'clock' : 'eye', 18)),
+        h('div', { style: 'min-width:0' }, h('div', { class: 'up-n' }, x.file.name), h('div', { class: 'up-bar' }, h('span', { style: `width:${Math.round(x.prog * 100)}%` })),
+          x.msg ? h('div', { class: 'fld-h', style: x.estado === 'erro' ? 'color:var(--bad)' : '' }, x.msg) : null),
+        h('span', { class: 'up-st' }, x.estado === 'ok' ? '✓ enviado' : x.estado === 'enviando' ? Math.round(x.prog * 100) + '%' : x.estado === 'erro' ? 'falhou' : fmtTam(x.file.size),
+          !st.enviando && x.estado !== 'ok' ? h('button', { type: 'button', class: 'icon-btn', style: 'width:26px;height:26px;margin-left:6px', 'aria-label': 'Tirar ' + x.file.name, onclick: () => { st.arquivos.splice(i, 1); desenhar(); } }, ic('x', 14)) : null)))) : null,
+      st.arquivos.length ? h('div', { class: 'fld-h' }, `${plural(st.arquivos.length, 'arquivo', 'arquivos')} · ${fmtTam(total)}${total > 200 * 1048576 ? ' · arquivos grandes: prefira enviar no Wi-Fi' : ''}`) : null];
+    const pend = st.arquivos.filter(x => x.estado !== 'ok').length;
+    abrirModal({ titulo: 'Enviar fotos e vídeos', corpo, rodape: [h('span', { class: 'sp' }), btn(pend || !st.arquivos.length ? 'Cancelar' : 'Fechar', () => { if (!st.enviando) fecharModal(); }, { disabled: st.enviando }),
+      btn(st.enviando ? 'Enviando…' : `Enviar${pend ? ' ' + pend : ''}`, enviar, { kind: 'primary', icon: 'upload', id: 'md-enviar', disabled: st.enviando || !pend || !st.ok1 || !st.ok2 })] });
+  }
+  async function enviar() {
+    st.enviando = true; desenhar();
+    let ok = 0;
+    for (const x of st.arquivos) {
+      if (x.estado === 'ok') continue;
+      x.estado = 'enviando'; x.prog = 0.01; x.msg = ''; desenhar();
+      try {
+        const ini = await chamarPonte('iniciar', { atividadeId: a.id, titulo: tituloAt(a), membroNome: membro ? membro.nome : '', nome: x.file.name, tipo: x.file.type, tamanho: x.file.size });
+        let ultimo = 0;
+        const res = await enviarEmPartes(ini.uploadUrl, x.file, p => { x.prog = p; if (p - ultimo > 0.04 || p === 1) { ultimo = p; desenhar(); } });
+        await S.db.collection('midias').doc().set({
+          atividadeId: a.id, data: a.data, membroId: meuMembroId(), tipo: /^video/.test(x.file.type) ? 'video' : 'foto',
+          nome: ini.nome || x.file.name, tamanho: x.file.size, driveId: res.id || '', link: res.webViewLink || '', pastaUrl: ini.pastaUrl || '',
+          thumb: x.thumb && x.thumb.length < 60000 ? x.thumb : '', status: 'interno', consentimento: true,
+          criadoEm: firebase.firestore.FieldValue.serverTimestamp(), local: new Date().toISOString()
+        });
+        x.estado = 'ok'; ok++;
+      } catch (e) { x.estado = 'erro'; x.msg = (e && e.code === 'permission-denied') ? 'O painel recusou o registro. Confira se as regras novas foram publicadas.' : (e && e.message) || 'Falha no envio.'; }
+      desenhar();
+    }
+    st.enviando = false; desenhar();
+    if (ok) toast(`${plural(ok, 'arquivo enviado', 'arquivos enviados')} para o Drive da liga.`, 'good');
+  }
+  desenhar();
+}
+async function curar(m, status) {
+  try { await gravar(`midias/${m.id}`, { status, curadoPor: quemSou(), curadoEm: new Date().toISOString() }, { atualizar: true }); toast(status === 'divulgacao' ? 'Aprovado para divulgação.' : 'Marcado como uso interno.', 'good'); } catch { /* tratado */ }
+}
+async function removerMidia(m) {
+  try {
+    if (m.driveId) await chamarPonte('apagar', { driveId: m.driveId });
+    await gravar(`midias/${m.id}`, null, { apagar: true });
+    toast('Arquivo enviado para a lixeira do Drive e removido do painel.');
+  } catch (e) { toast((e && e.message) || 'Não foi possível remover.', 'bad'); }
+}
+function cartaoMidia(m, { mostrarPratica = false } = {}) {
+  const membro = S.membros.get(m.membroId);
+  const a = S.atividades.get(m.atividadeId);
+  const gestor = gestorMidias();
+  const hora = (tsDate(m.criadoEm) || (m.local ? new Date(m.local) : null));
+  const remover = h('span');
+  const confirmaRemover = () => remover.replaceChildren(btn('Confirmar', () => removerMidia(m), { kind: 'danger', sm: true }), btn('Não', () => remover.replaceChildren(btnRem()), { kind: 'text', sm: true }));
+  const btnRem = () => btn('Remover', confirmaRemover, { kind: 'text', sm: true });
+  if (gestor) remover.append(btnRem());
+  return h('div', { class: 'gal-i' },
+    h('div', { class: 'gal-th' }, m.thumb ? h('img', { src: m.thumb, alt: m.tipo === 'video' ? 'Quadro do vídeo' : 'Miniatura da foto', loading: 'lazy' }) : ic(m.tipo === 'video' ? 'clock' : 'eye', 26), m.tipo === 'video' ? h('span', { class: 'play' }, 'VÍDEO') : null),
+    h('div', { class: 'gal-tx' }, h('b', null, (membro && membro.nome) || 'Membro'), h('span', { class: 'card-s' }, [mostrarPratica && a ? fmt(a.data, { day: '2-digit', month: '2-digit' }) + ' ' + tituloAt(a) : '', hora ? hhmm(hora) : ''].filter(Boolean).join(' · ')),
+      h('span', { class: 'pill ' + (m.status === 'divulgacao' ? 's-realizada' : 's-neutro'), style: 'align-self:flex-start' }, m.status === 'divulgacao' ? '✓ Divulgação' : 'Uso interno')),
+    gestor ? h('div', { class: 'gal-a' },
+      m.status === 'divulgacao' ? btn('Interno', () => curar(m, 'interno'), { kind: 'text', sm: true }) : btn('Divulgar', () => curar(m, 'divulgacao'), { kind: 'text', sm: true }),
+      m.link ? h('a', { class: 'btn btn-text btn-sm', href: m.link, target: '_blank', rel: 'noopener' }, 'Drive') : null, remover) : null);
+}
+function secaoMidias(a) {
+  if (!a || a.tipo !== 'pratica') return null;
+  const lista = midiasDe(a.id);
+  const podeEnviar = podeEnviarMidia(a);
+  if (!lista.length && !podeEnviar) return null;
+  return h('div', { class: 'sec', id: 'sec-midias-' + a.id },
+    h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Fotos e vídeos'),
+      podeEnviar ? btn('Enviar fotos e vídeos', () => modalEnviarMidias(a), { kind: 'gold', sm: true, icon: 'upload', id: 'enviar-' + a.id }) : null),
+    lista.length ? h('div', { class: 'gal' }, lista.map(m => cartaoMidia(m))) : h('div', { class: 'card-s' }, 'Nenhum envio ainda. Os arquivos vão para o Google Drive da liga.'),
+    podeEnviar && !pontePronta() ? h('div', { class: 'fld-h' }, 'O envio fica disponível depois que a presidência configurar a integração com o Google Drive.') : null);
+}
+function textoMidias(aid, mid) {
+  const n = [...S.midias.values()].filter(x => x.atividadeId === aid && x.membroId === mid);
+  if (!n.length) return null;
+  const t = n.map(x => tsDate(x.criadoEm) || new Date(x.local)).filter(Boolean).sort((x, y) => x - y)[0];
+  return h('span', { class: 'reg mid' }, `Fotos/vídeos: ${n.length} enviado${n.length > 1 ? 's' : ''}${t ? ' · primeiro às ' + hhmm(t) : ''}`);
+}
+function vMidias() {
+  const gestor = gestorMidias();
+  const f = S.fMd || 'todas';
+  let lista = [...S.midias.values()].sort((x, y) => String(y.local || '').localeCompare(String(x.local || '')));
+  if (f === 'curadoria') lista = lista.filter(m => m.status !== 'divulgacao');
+  if (f === 'divulgacao') lista = lista.filter(m => m.status === 'divulgacao');
+  if (f === 'minhas') lista = lista.filter(m => m.membroId === meuMembroId());
+  const grupos = new Map();
+  for (const m of lista) { if (!grupos.has(m.atividadeId)) grupos.set(m.atividadeId, []); grupos.get(m.atividadeId).push(m); }
+  const recentes = atividadesOrdenadas().filter(a => podeEnviarMidia(a)).reverse();
+  const opcoes = gestor ? [['todas', 'Todas'], ['curadoria', 'Para curadoria'], ['divulgacao', 'Aprovadas'], ['minhas', 'Minhas']] : [['todas', 'Minhas e aprovadas'], ['minhas', 'Só as minhas'], ['divulgacao', 'Aprovadas para divulgação']];
+  return h('div', { class: 'page' },
+    pageHead('Fotos e vídeos', 'Registros das práticas, guardados no Google Drive da liga', [
+      gestor && S.drive && S.drive.pastaUrl ? h('a', { class: 'btn btn-ghost', href: S.drive.pastaUrl, target: '_blank', rel: 'noopener' }, ic('right', 17), h('span', null, 'Abrir pasta no Drive')) : null]),
+    !pontePronta() ? h('div', { class: 'banner warn' }, ic('alert'), h('span', { class: 'grow' }, h('b', null, 'Integração com o Drive não configurada. '), vePermissoes() ? 'Siga o passo a passo em Permissões › Google Drive.' : 'A presidência precisa concluir a configuração.')) : null,
+    recentes.length && pontePronta() ? card('Enviar de uma prática recente', 'Até 7 dias depois da prática', h('div', { class: 'rows' }, recentes.slice(0, 6).map(a => h('div', { class: 'ck-row' }, dateBlock(a.data),
+      h('div', { class: 'ck-main', style: 'cursor:default' }, h('span', { class: 'row-title' }, tituloAt(a)), h('span', { class: 'row-meta' }, [horario(a), a.local].filter(Boolean).join(' · '))),
+      h('div', { class: 'ck-side' }, btn('Enviar', () => modalEnviarMidias(a), { kind: 'gold', sm: true, icon: 'upload' }))))), { flush: true, id: 'enviar-recentes' }) : null,
+    h('div', { class: 'filters' }, seg(opcoes, f, v => { S.fMd = v; agendar(); }, { label: 'Filtro' })),
+    grupos.size ? h('div', { class: 'stack', id: 'galeria' }, [...grupos.entries()].map(([aid, ms]) => {
+      const a = S.atividades.get(aid);
+      return card(a ? `${fmt(a.data, { day: '2-digit', month: '2-digit', year: 'numeric' })} · ${tituloAt(a)}` : 'Prática removida', plural(ms.length, 'arquivo', 'arquivos'), h('div', { class: 'gal' }, ms.map(m => cartaoMidia(m))),
+        { action: gestor && ms[0].pastaUrl ? h('a', { class: 'btn btn-text btn-sm', href: ms[0].pastaUrl, target: '_blank', rel: 'noopener' }, 'Pasta no Drive') : null });
+    })) : h('section', { class: 'card' }, h('div', { class: 'empty' }, 'Nenhuma foto ou vídeo por aqui ainda.')));
+}
+function cardDrive(ed) {
+  const st = S.driveForm || (S.driveForm = { url: (S.drive && S.drive.url) || '', testando: false, res: null });
+  if (!st.tocado && S.drive && S.drive.url && !st.url) st.url = S.drive.url;
+  const salvar = async () => {
+    const url = st.url.trim();
+    if (url && !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(url)) { toast('Cole o endereço do App da Web, que termina em /exec.', 'warn'); return; }
+    try { await gravar('config/drive', { url, pastaUrl: (S.drive && S.drive.pastaUrl) || '', atualizadoEm: new Date().toISOString() }); toast('Endereço da ponte salvo.', 'good'); } catch { /* tratado */ }
+  };
+  const testar = async () => {
+    st.testando = true; st.res = null; agendar();
+    try { const r = await chamarPonte('ping'); st.res = { ok: true, txt: `Conectado à conta ${r.conta}. Pasta: ${r.pasta}.` }; if (ed && r.pastaUrl && (!S.drive || S.drive.pastaUrl !== r.pastaUrl)) gravar('config/drive', { ...(S.drive || {}), url: S.drive.url, pastaUrl: r.pastaUrl, atualizadoEm: new Date().toISOString() }).catch(() => {}); }
+    catch (e) { st.res = { ok: false, txt: e.message }; }
+    st.testando = false; agendar();
+  };
+  return card('Google Drive', 'Fotos e vídeos das práticas vão para o Drive da liga', h('div', { class: 'sec' },
+    h('ol', { class: 'howto' },
+      h('li', null, 'Com a conta Google da liga, abra script.google.com › Novo projeto e cole o arquivo ponte-drive.gs.'),
+      h('li', null, 'Execute a função "configurar" uma vez e autorize o acesso ao Drive.'),
+      h('li', null, 'Implantar › Nova implantação › App da Web › Executar como: Eu · Quem pode acessar: Qualquer pessoa.'),
+      h('li', null, 'Cole abaixo o endereço gerado (termina em /exec), salve e teste.')),
+    field('Endereço da ponte (App da Web)', inp('drive-url', st.url, { disabled: !ed, placeholder: 'https://script.google.com/macros/s/…/exec', oninput: e => { st.url = e.target.value; st.tocado = true; } })),
+    h('div', { class: 'filters' },
+      ed ? btn('Salvar', salvar, { kind: 'primary', sm: true }) : null,
+      pontePronta() ? btn(st.testando ? 'Testando…' : 'Testar conexão', testar, { sm: true, disabled: st.testando, id: 'drive-testar' }) : null,
+      S.drive && S.drive.pastaUrl ? h('a', { class: 'btn btn-text btn-sm', href: S.drive.pastaUrl, target: '_blank', rel: 'noopener' }, 'Abrir pasta') : null),
+    st.res ? h('div', { class: 'note' + (st.res.ok ? '' : ' gold'), style: st.res.ok ? 'border-color:var(--good)' : '' }, st.res.ok ? '✓ ' : '! ', st.res.txt) : null,
+    h('div', { class: 'fld-h' }, 'A pasta fica privada na conta da liga. Para a Diretoria de marketing abrir os arquivos no Drive, compartilhe a pasta com os e-mails dela pelo próprio Drive.')), { id: 'drive' });
+}
+
+const VIEWS = { midias: vMidias, presenca: vPresenca, eventos: vEventos, produtos: vProdutos, painel: vPainel, agenda: vAgenda, atividades: vAtividades, praticas: vPraticas, membros: vMembros, acesso: vAcesso };
 
 /* ================= gaveta e modal ================= */
 let focoAntes = null;
@@ -2519,6 +2773,7 @@ function gavetaAtividade(id, preset = {}) {
       !ed && f.link && /^https?:\/\//.test(f.link) ? h('a', { href: f.link, target: '_blank', rel: 'noopener' }, 'Abrir material da aula') : null));
 
     if (!novo) corpo.push(secaoCheckin(S.atividades.get(orig.id) || orig));
+    if (!novo && f.tipo === 'pratica') corpo.push(secaoMidias(S.atividades.get(orig.id) || orig));
 
     // escala
     if (f.tipo === 'pratica' && veEscalas()) {
@@ -2560,7 +2815,7 @@ function gavetaAtividade(id, preset = {}) {
         lista.length ? h('div', { class: 'plist' }, lista.map(m => {
           const v = f.presencas[m.id];
           return h('div', { class: 'prow' },
-            h('span', { class: 'prow-n' }, m.nome, h('span', { class: 'tag' }, CATEG[m.categoria] || ''), f.tipo === 'pratica' && orig ? textoRegistro(registroDe(orig.id, m.id), f) : null),
+            h('span', { class: 'prow-n' }, m.nome, h('span', { class: 'tag' }, CATEG[m.categoria] || ''), f.tipo === 'pratica' && orig ? textoRegistro(registroDe(orig.id, m.id), f) : null, f.tipo === 'pratica' && orig ? textoMidias(orig.id, m.id) : null),
             h('span', { class: 'pseg', role: 'group', 'aria-label': 'Presença de ' + m.nome },
               ['P', 'F', 'J'].map(k => h('button', { type: 'button', class: k, 'aria-pressed': String(v === k), title: { P: 'Presente', F: 'Falta', J: 'Falta justificada' }[k], disabled: !ep,
                 onclick: () => { if (f.presencas[m.id] === k) delete f.presencas[m.id]; else f.presencas[m.id] = k; sujo = true; desenhar(); } }, k))));
