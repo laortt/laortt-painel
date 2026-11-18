@@ -298,6 +298,12 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 .note{font-size:13px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
 .note.gold{background:var(--gold-wash);border-color:var(--gold-line);color:var(--ink)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
+.rep-datas{display:flex;flex-wrap:wrap;gap:6px}
+.rep-d{border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:4px 11px;font:500 13px var(--f-body);cursor:pointer}
+.rep-d[aria-pressed="false"]{background:none;color:var(--muted);text-decoration:line-through;border-style:dashed}
+.rep-d.extra{border-color:var(--gold-line);background:var(--gold-wash)}
+.rep-d.dup{cursor:default;opacity:.65}
+.fila-sep{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:6px}
 .pchip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line-2);background:var(--surface-2);border-radius:999px;padding:2px 4px 2px 10px;font-size:13px;font-weight:500}
 .pchip button{border:0;background:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
 .pchip button:hover{background:var(--line);color:var(--ink)}
@@ -1530,7 +1536,7 @@ function primeirosPassos() {
   return card('Primeiros passos', temMembros ? `${S.membros.size} membros cadastrados` : 'Comece importando a lista de membros', h('ol', { class: 'steps' },
     passo(temMembros, 'Importe os membros', 'Os 30 nomes da lista oficial, já separados em Júnior e Plenos.', pode('membros') ? btn('Importar', importarMembros, { sm: true, id: 'btn-importar' }) : null),
     passo(temCampo, 'Cadastre os campos de prática', 'Hospital, preceptor, dias da semana e vagas.', pode('campos') ? btn('Cadastrar', () => gavetaCampo(null), { sm: true }) : null),
-    passo(temPratica, 'Gere os dias de prática', 'O rodízio distribui os membros de forma equilibrada.', pode('campos') && temCampo ? btn('Gerar', () => modalGerar(), { sm: true }) : null),
+    passo(temPratica, 'Gere os dias de prática', 'Os dias saem sem escala: os membros fazem check-in e a diretoria confirma.', pode('campos') && temCampo ? btn('Gerar', () => modalGerar(), { sm: true }) : null),
     passo(temAula, 'Agende a primeira aula fechada', 'Tema, palestrante, público e local.', pode('aulas') ? btn('Agendar', () => gavetaAtividade(null, { tipo: 'aula' }), { sm: true }) : null),
     passo(temPapeis, 'Libere os e-mails da equipe', 'Diretoria, coordenação e membros.', vePermissoes() ? btn('Abrir', () => { location.hash = 'acesso'; }, { sm: true }) : null)),
     { id: 'primeiros-passos' });
@@ -1611,7 +1617,7 @@ function vAgenda() {
     h('div', { class: 'cal2-dica' }, ic('info', 15), 'Clique num dia para ver os horários e colocar seu nome.'),
     grid);
   return h('div', { class: 'page' },
-    pageHead('Agenda', 'Calendário de práticas, aulas e eventos', [pode('campos') && S.campos.size ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'shuffle' }) : null]),
+    pageHead('Agenda', 'Calendário de práticas, aulas e eventos', [pode('campos') && S.campos.size ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'cal' }) : null]),
     cardPresencaHoje(), calCard, cardMeusCheckins());
 }
 
@@ -1664,7 +1670,7 @@ function vPraticas() {
       h('div', { class: 'card-s' }, `${PUBLICOS[c.publico || 'todos']} · ${prox.length ? plural(prox.length, 'dia agendado', 'dias agendados') : 'sem dias agendados'}`),
       h('div', { class: 'campo-a' },
         pode('campos') ? btn('Editar', () => gavetaCampo(c.id), { sm: true, icon: 'edit' }) : btn('Detalhes', () => gavetaCampo(c.id), { sm: true }),
-        pode('campos') && c.ativo !== false ? btn('Gerar dias', () => modalGerar(c.id), { sm: true, icon: 'shuffle' }) : null));
+        pode('campos') && c.ativo !== false ? btn('Gerar dias', () => modalGerar(c.id), { sm: true, icon: 'cal' }) : null));
   });
   const prox = atividadesOrdenadas().filter(a => a.tipo === 'pratica' && a.data >= t && a.data <= addDias(t, 30) && a.status !== 'cancelada');
 
@@ -1676,7 +1682,7 @@ function vPraticas() {
     const vals = itens.map(i => i.valor);
     const media = vals.length ? (vals.reduce((x, y) => x + y, 0) / vals.length) : 0;
     const vis = S.verTodosRodizio ? itens : itens.slice(0, 10);
-    rodizio = card('Distribuição do rodízio', `Média de ${media.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} escala(s) por membro · menor ${vals.length ? Math.min(...vals) : 0} · maior ${vals.length ? Math.max(...vals) : 0} · menos escalados primeiro`,
+    rodizio = card('Distribuição das escalas', `Média de ${media.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} escala(s) por membro · menor ${vals.length ? Math.min(...vals) : 0} · maior ${vals.length ? Math.max(...vals) : 0} · menos escalados primeiro (só informativo)`,
       h('div', null, barras(vis.map(i => ({ ...i, tip: `${i.label} · ${plural(i.valor, 'escala', 'escalas')} (realizadas e agendadas)` })), { id: 'grafico-rodizio' }),
         itens.length > 10 ? btn(S.verTodosRodizio ? 'Mostrar só os 10 menos escalados' : `Mostrar todos (${itens.length})`, () => { S.verTodosRodizio = !S.verTodosRodizio; agendar(); }, { kind: 'text', sm: true }) : null),
       { id: 'rodizio' });
@@ -1684,9 +1690,9 @@ function vPraticas() {
   return h('div', { class: 'page' },
     pageHead('Campos de prática', 'Onde, quando e com quem acontecem as práticas', [
       pode('campos') ? btn('Novo campo', () => gavetaCampo(null), { kind: 'primary', icon: 'plus' }) : null,
-      pode('campos') && campos.some(c => c.ativo !== false) ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'shuffle' }) : null]),
+      pode('campos') && campos.some(c => c.ativo !== false) ? btn('Gerar dias de prática', () => modalGerar(), { icon: 'cal' }) : null]),
     campos.length ? h('div', { class: 'campos', id: 'lista-campos' }, cards)
-      : h('section', { class: 'card' }, h('div', { class: 'empty' }, h('span', null, h('b', null, 'Nenhum campo de prática cadastrado. '), 'Cadastre ambulatórios, centros cirúrgicos e plantões com os dias da semana e o número de vagas; depois gere os dias com o rodízio automático.'),
+      : h('section', { class: 'card' }, h('div', { class: 'empty' }, h('span', null, h('b', null, 'Nenhum campo de prática cadastrado. '), 'Cadastre ambulatórios, centros cirúrgicos e plantões com os dias da semana e o número de vagas; depois gere os dias de prática.'),
         pode('campos') ? btn('Cadastrar campo de prática', () => gavetaCampo(null), { kind: 'primary', icon: 'plus', sm: true }) : null)),
     (() => {
       const proxCard = card('Próximos dias de prática', 'Próximos 30 dias', prox.length ? h('div', { class: 'rows' }, prox.map(linhaAtividade)) : h('div', { class: 'empty' }, 'Nenhum dia de prática agendado para os próximos 30 dias.'), { flush: true, id: 'proximos-dias' });
@@ -2109,9 +2115,10 @@ function meuItem(a) {
 function statusMeu(a) { const x = meuItem(a); return x ? x.estado : null; }
 function vagasInfo(a) {
   const L = listaDe(a);
-  const txt = (L.v ? `${Math.min(L.dentro, L.v)}/${L.v} vagas` : `${L.dentro} inscrito${L.dentro === 1 ? '' : 's'}`) + (L.espera ? ` · ${L.espera} na espera` : '');
-  const pct = L.v ? Math.min(100, (100 * L.dentro) / L.v) : 0;
-  return h('span', { class: 'meter' + (L.v && L.dentro >= L.v ? ' full' : '') }, L.v ? h('span', { class: 'meter-t' }, h('span', { class: 'meter-f', style: `width:${pct}%` })) : null, h('span', { class: 'num' }, txt));
+  const aguard = L.dentro - L.confirmados;
+  const txt = (L.v ? `${L.confirmados}/${L.v} confirmados` : `${L.confirmados} confirmado${L.confirmados === 1 ? '' : 's'}`) + (aguard ? ` · ${aguard} aguardando` : '') + (L.espera ? ` · ${L.espera} na espera` : '');
+  const pct = L.v ? Math.min(100, (100 * L.confirmados) / L.v) : 0;
+  return h('span', { class: 'meter' + (L.v && L.confirmados >= L.v ? ' full' : '') }, L.v ? h('span', { class: 'meter-t' }, h('span', { class: 'meter-f', style: `width:${pct}%` })) : null, h('span', { class: 'num' }, txt));
 }
 async function fazerCheckin(a) {
   const mid = meuMembroId(); if (!mid) return;
@@ -2147,6 +2154,9 @@ async function decidir(a, mid, acao) {
       const novo = acao === 'confirmar' ? [...new Set([...atual, mid])] : atual.filter(x => x !== mid);
       if (novo.length !== atual.length) await gravar(`atividades/${a.id}`, { escalados: novo, atualizadoEm: agora, atualizadoPor: quemSou() }, { atualizar: true });
     }
+    const nm = (S.membros.get(mid) || {}).nome || 'Membro';
+    if (acao === 'remover') toast(`${nm} foi retirado(a) deste horário.`);
+    else if (acao === 'apagar') toast(`${nm} saiu da lista deste horário.`);
   } catch { /* tratado */ }
 }
 async function adicionarMembro(a, mid) {
@@ -2160,7 +2170,7 @@ async function confirmarLista(a) {
   for (const x of alvo) await decidir(a, x.membroId, 'confirmar');
   toast(`${plural(alvo.length, 'nome confirmado', 'nomes confirmados')}.`, 'good');
 }
-const ROTULO_ESTADO = { confirmado: ['s-realizada', '✓ Confirmado'], vaga: ['s-hoje', 'Na vaga'], espera: ['s-pendente', 'Lista de espera'], recusado: ['s-neutro', 'Não selecionado'] };
+const ROTULO_ESTADO = { confirmado: ['s-realizada', '✓ Confirmado'], vaga: ['s-hoje', 'Aguardando confirmação'], espera: ['s-pendente', 'Lista de espera'], recusado: ['s-neutro', 'Retirado pela diretoria'] };
 function minhaAcao(a) {
   const mid = meuMembroId();
   if (a.tipo === 'evento' || !S.db || S.previa) return null;
@@ -2171,7 +2181,8 @@ function minhaAcao(a) {
     const podeCancelar = x.c && x.c.status === 'solicitado' && checkinAberto(a);
     return h('span', { class: 'ck-acts' }, h('span', { class: 'pill ' + cls }, 'Você: ' + rot),
       podeCancelar ? btn('Tirar meu nome', () => cancelarCheckin(a), { kind: 'text', sm: true }) : null,
-      x.estado === 'confirmado' ? h('span', { class: 'card-s' }, 'Para desistir, avise a direção de práticas.') : null);
+      x.estado === 'confirmado' ? h('span', { class: 'card-s' }, 'Para desistir, avise a direção de práticas.') : null,
+      x.estado === 'recusado' ? h('span', { class: 'card-s' }, 'Se achar que foi engano, fale com a direção de práticas.') : null);
   }
   if (!checkinAberto(a)) return h('span', { class: 'card-s' }, a.checkinAberto === false ? 'Check-in fechado' : 'Check-in encerrado');
   if (!publicoInclui(a.publico, minhaCategoria())) return h('span', { class: 'card-s' }, 'Só para ' + (a.publico === 'pleno' ? 'membros Plenos' : 'membros Júnior'));
@@ -2184,11 +2195,13 @@ function listaNomes(a, { compacta = false } = {}) {
   const linha = (x, n) => {
     const m = S.membros.get(x.membroId);
     const [cls, rot] = ROTULO_ESTADO[x.estado];
+    const retirar = () => btn('Retirar', () => decidir(a, x.membroId, x.c ? 'remover' : 'apagar'), { kind: 'text', sm: true, id: `ret-${a.id}-${x.membroId}`, title: 'Tirar este nome do horário' });
     const acoes = !gestor ? null : x.estado === 'confirmado'
-      ? h('span', { class: 'ck-acts' }, x.c ? btn('Voltar à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true }) : null, btn('Remover', () => decidir(a, x.membroId, x.c ? 'remover' : 'apagar'), { kind: 'text', sm: true }))
+      ? h('span', { class: 'ck-acts' }, x.c ? btn('Voltar à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true }) : null, retirar())
       : x.estado === 'recusado'
-        ? h('span', { class: 'ck-acts' }, btn('Voltar à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true }))
-        : h('span', { class: 'ck-acts' }, btn('Confirmar', () => decidir(a, x.membroId, 'confirmar'), { kind: 'primary', sm: true }), btn('Remover', () => decidir(a, x.membroId, 'remover'), { kind: 'text', sm: true }));
+        ? h('span', { class: 'ck-acts' }, btn('Devolver à lista', () => decidir(a, x.membroId, 'fila'), { kind: 'text', sm: true, id: `dev-${a.id}-${x.membroId}` }),
+            btn('Liberar novo check-in', () => decidir(a, x.membroId, 'apagar'), { kind: 'text', sm: true, title: 'Apaga o registro: o membro poderá colocar o nome de novo' }))
+        : h('span', { class: 'ck-acts' }, btn('Confirmar', () => decidir(a, x.membroId, 'confirmar'), { kind: 'primary', sm: true }), retirar());
     return h('div', { class: 'fila-i' + (x.estado === 'confirmado' ? ' conf' : '') + (x.estado === 'recusado' ? ' rec' : '') + (x.membroId === eu ? ' eu' : '') },
       h('span', { class: 'fila-n' }, x.estado === 'confirmado' ? '✓' : x.estado === 'recusado' ? '–' : n),
       h('span', { style: 'min-width:0' }, (m && m.nome) || 'Membro removido', ehPleno(x.membroId) ? h('span', { class: 'prio', title: 'Membro Pleno: prioridade na lista' }, 'PLENO') : null,
@@ -2197,12 +2210,12 @@ function listaNomes(a, { compacta = false } = {}) {
   };
   let n = 0;
   const linhas = L.itens.map(x => linha(x, x.estado === 'confirmado' ? 0 : ++n));
-  if (gestor) L.recusados.forEach(x => linhas.push(linha(x, 0)));
+  if (gestor && L.recusados.length) { linhas.push(h('div', { class: 'fila-sep' }, 'Retirados')); L.recusados.forEach(x => linhas.push(linha(x, 0))); }
   const fora = gestor ? membrosAtivos().filter(m => !L.itens.some(x => x.membroId === m.id) && publicoInclui(a.publico, m.categoria)) : [];
   return h('div', { class: 'sec', style: 'gap:8px' },
     linhas.length ? h('div', { class: 'fila' }, linhas) : h('div', { class: 'card-s' }, 'Ninguém colocou o nome ainda.'),
     gestor && !compacta ? h('div', { class: 'filters' },
-      L.itens.some(x => x.estado === 'vaga') ? btn('Confirmar quem está na vaga', () => confirmarLista(a), { kind: 'gold', sm: true, icon: 'check' }) : null,
+      L.itens.some(x => x.estado === 'vaga') ? btn('Confirmar os primeiros dentro das vagas', () => confirmarLista(a), { kind: 'gold', sm: true, icon: 'check' }) : null,
       fora.length ? sel('add-' + a.id, '', [['', 'Adicionar um membro…'], ...fora.map(m => [m.id, m.nome + (m.categoria === 'pleno' ? ' (Pleno)' : '')])], { aria: 'Adicionar membro a este horário', onchange: e => adicionarMembro(a, e.target.value) }) : null) : null);
 }
 /* Gaveta do dia: os horários daquela data, com a lista de nomes de cada um. */
@@ -2232,7 +2245,7 @@ function gavetaDia(iso) {
   const corpo = [
     !meuMembroId() && S.db && !S.previa ? h('div', { class: 'note gold' }, 'Para colocar seu nome, seu e-mail precisa estar vinculado ao seu nome da lista de membros (Permissões).') : null,
     cards.length || evCards.length ? h('div', { class: 'slots' }, cards, evCards) : h('div', { class: 'empty', style: 'padding:6px 0' }, 'Nenhum horário de prática ou aula neste dia.'),
-    h('div', { class: 'fld-h' }, 'Ordem da lista: confirmados; depois membros Plenos; dentro de cada categoria, quem colocou o nome primeiro. Quem passa do número de vagas fica na lista de espera.')];
+    h('div', { class: 'fld-h' }, 'Ninguém é escalado automaticamente: a Diretoria de Práticas ou a Presidência confirma, retira ou devolve cada nome. Ordem de quem aguarda: Plenos primeiro e, dentro de cada categoria, quem colocou o nome antes; quem passa do número de vagas fica na lista de espera.')];
   const qtd = ats.length;
   abrirGaveta({ titulo: fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase()),
     sub: qtd ? plural(qtd, 'horário', 'horários') : 'Agenda', corpo,
@@ -2245,7 +2258,7 @@ function secaoCheckin(a) {
     h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Check-in e vagas'), vagasInfo(a)),
     h('div', { class: 'filters' }, minhaAcao(a)),
     listaNomes(a),
-    h('div', { class: 'fld-h' }, 'Confirmados primeiro; depois Plenos; dentro de cada categoria, a ordem de chegada. Só quem tem a permissão Check-ins altera a lista.'));
+    h('div', { class: 'fld-h' }, 'Ninguém entra na escala sozinho: só quem tem a permissão Check-ins (Diretoria de Práticas e Presidência) confirma, retira ou devolve nomes. Quem aguarda segue a ordem: Plenos primeiro, depois a ordem de chegada.'));
 }
 function cardMeusCheckins() {
   const mid = meuMembroId();
@@ -2882,6 +2895,10 @@ function gavetaAtividade(id, preset = {}) {
   let sujo = false;
   const token = {}; S.gavetaToken = token;
   let escSujo = false;
+  const rep = novaRepeticao(f.data);
+  let escopo = 'esta';
+  const serieIrmas = () => orig && orig.serieId ? [...S.atividades.values()].filter(x => x.serieId === orig.serieId && x.id !== orig.id && x.data > orig.data && x.status !== 'realizada').sort((x, y) => x.data.localeCompare(y.data)) : [];
+  const existeNoDia = d => f.tipo === 'pratica' && !!f.campoId && [...S.atividades.values()].some(x => x.tipo === 'pratica' && x.campoId === f.campoId && x.data === d && x.status !== 'cancelada');
 
   function aplicarCampo(ff, c) {
     if (!c) return;
@@ -2913,7 +2930,7 @@ function gavetaAtividade(id, preset = {}) {
       dados.append(field('Tema da aula', inp('at-titulo', f.titulo, { disabled: !ed, placeholder: 'Ex.: Fraturas do terço distal do rádio', oninput: e => up('titulo', e.target.value) }), { wide: true }));
     }
     dados.append(
-      field('Data', inp('at-data', f.data, { type: 'date', disabled: !ed, oninput: e => up('data', e.target.value) })),
+      field(novo && rep.tipo !== 'nao' ? 'Começa em' : 'Data', inp('at-data', f.data, { type: 'date', disabled: !ed, oninput: e => up('data', e.target.value), onchange: e => { up('data', e.target.value); if (novo && rep.tipo !== 'nao') { rep.fora.clear(); desenhar(); } } })),
       h('div', { class: 'grid2' },
         field('Início', inp('at-ini', f.inicio, { type: 'time', disabled: !ed, oninput: e => up('inicio', e.target.value) })),
         field('Fim', inp('at-fim', f.fim, { type: 'time', disabled: !ed, oninput: e => up('fim', e.target.value) }))),
@@ -2928,6 +2945,16 @@ function gavetaAtividade(id, preset = {}) {
     corpo.push(h('div', { class: 'sec' }, h('div', { class: 'sec-t' }, 'Dados'), !ed ? h('div', { class: 'note' }, 'Somente leitura para o seu papel.') : null, dados,
       !ed && f.link && /^https?:\/\//.test(f.link) ? h('a', { href: f.link, target: '_blank', rel: 'noopener' }, 'Abrir material da aula') : null));
 
+    if (novo && ed) corpo.push(blocoRepeticao(rep, f, ed, desenhar, existeNoDia));
+    if (!novo && ed && orig.serieId) {
+      const irmas = serieIrmas();
+      if (!irmas.length && escopo === 'proximas') escopo = 'esta';
+      corpo.push(h('div', { class: 'sec', id: 'sec-serie' },
+        h('div', { class: 'sec-h' }, h('div', { class: 'sec-t' }, 'Série'), h('span', { class: 'card-s' }, orig.serieRegra || 'Datas repetidas')),
+        irmas.length ? field('Salvar e excluir valem para', seg([['esta', 'Só esta data'], ['proximas', `Esta e as próximas (${irmas.length + 1})`]], escopo, v => { escopo = v; desenhar(); }, { id: 'at-escopo' }), { wide: true })
+          : h('div', { class: 'card-s' }, 'Esta é a última data agendada da série.'),
+        irmas.length ? h('div', { class: 'fld-h' }, `Em "Esta e as próximas", só o que você mudar aqui (horário, local, preceptor, vagas, público, situação, observações) é copiado para as próximas datas. Se mudar a data, as próximas andam o mesmo número de dias. Escala, check-ins e presença de cada data continuam como estão; datas já realizadas não mudam. Próxima: ${fmt(irmas[0].data, { day: '2-digit', month: '2-digit' })}.`) : null));
+    }
     if (!novo) corpo.push(secaoCheckin(S.atividades.get(orig.id) || orig));
     if (!novo && f.tipo === 'pratica') corpo.push(secaoMidias(S.atividades.get(orig.id) || orig));
 
@@ -2945,13 +2972,7 @@ function gavetaAtividade(id, preset = {}) {
         ed ? h('div', { class: 'filters' },
           sel('esc-add', '', [['', 'Adicionar membro…'], ...disponiveis.map(m => [m.id, m.nome + (ocup.has(m.id) ? ' (já escalado neste dia)' : '')])], {
             aria: 'Adicionar membro à escala', onchange: e => { if (e.target.value) { f.escalados = [...f.escalados, e.target.value]; sujo = true; escSujo = true; desenhar(); } }
-          }),
-          btn('Completar com rodízio', () => {
-            const ids = sugerirEscala({ data: f.data, vagas, publico: f.publico, ja: f.escalados, carga: cargaPraticas(orig && orig.id), ocupados: ocup });
-            if (!vagas) { toast('Defina o número de vagas primeiro.', 'warn'); return; }
-            if (!ids.length) { toast(f.escalados.length >= vagas ? 'A escala já está completa.' : 'Não há membros disponíveis para este público.', 'warn'); return; }
-            f.escalados = [...f.escalados, ...ids]; sujo = true; escSujo = true; desenhar();
-          }, { icon: 'shuffle', sm: true, title: 'Escolhe quem tem menos práticas e está há mais tempo sem escala' })) : null));
+          })) : null));
     }
 
     // presença
@@ -2985,10 +3006,10 @@ function gavetaAtividade(id, preset = {}) {
     }
 
     const rodape = [
-      !novo && podeDados() ? botaoExcluir('Excluir', excluir) : null,
+      !novo && podeDados() ? botaoExcluir(escopo === 'proximas' ? 'Excluir esta e as próximas' : 'Excluir', excluir) : null,
       h('span', { class: 'sp' }),
       !novo && S.downloads ? btn('Lista para assinatura', () => baixar(`lista-presenca-${f.data}-${slug(tituloAt(f))}.html`, folhaAssinatura(f)), { icon: 'download', sm: true, title: 'Baixar a lista no formato da LAORTT para imprimir' }) : null,
-      (podeDados() || (!novo && podePres())) ? btn(novo ? 'Criar' : 'Salvar', salvar, { kind: 'primary', id: 'at-salvar' }) : btn('Fechar', fecharGaveta)
+      (podeDados() || (!novo && podePres())) ? btn(novo ? (rep.tipo !== 'nao' && podeDados() ? `Criar ${plural(datasFinais(rep, f.data, existeNoDia).length, 'data', 'datas')}` : 'Criar') : (escopo === 'proximas' ? 'Salvar nesta e nas próximas' : 'Salvar'), salvar, { kind: 'primary', id: 'at-salvar' }) : btn('Fechar', fecharGaveta)
     ];
     const subt = orig && orig.atualizadoEm ? `Atualizado em ${fmtCurta(orig.atualizadoEm.slice(0, 10))}${orig.atualizadoPor ? ' por ' + orig.atualizadoPor : ''}` : (novo ? 'Nova atividade' : TIPOS[f.tipo]);
     abrirGaveta({ titulo: novo ? (f.tipo === 'aula' ? 'Nova aula fechada' : 'Nova prática') : tituloAt(f), sub: subt, corpo, rodape });
@@ -3000,12 +3021,31 @@ function gavetaAtividade(id, preset = {}) {
     const presMudou = !novo && JSON.stringify(f.presencas) !== presAntes;
     const temPres = Object.keys(f.presencas || {}).length > 0;
     const nid = orig ? orig.id : novoId(f.tipo === 'aula' ? 'aula' : 'pr');
-    let auto = false;
+    let auto = false, extraMsg = '';
     if (podeDados()) {
       if (f.tipo === 'aula' && !String(f.titulo).trim()) { toast('Informe o tema da aula.', 'warn'); document.getElementById('at-titulo')?.focus(); return; }
       if (f.tipo === 'pratica' && !f.campoId && !String(f.titulo).trim()) { toast('Escolha o campo de prática ou dê um título.', 'warn'); return; }
     } else if (!presMudou) { fecharGaveta(); return; }
     const btnS = document.getElementById('at-salvar'); if (btnS) btnS.disabled = true;
+    if (novo && podeDados() && rep.tipo !== 'nao') {
+      const datas = datasFinais(rep, f.data, existeNoDia);
+      if (!datas.length) { toast('Nenhuma data para criar. Ajuste a repetição.', 'warn'); if (btnS) btnS.disabled = false; return; }
+      const serieId = novoId('serie'), serieRegra = descricaoRegra(rep, f.data);
+      const base = {
+        tipo: f.tipo, titulo: String(f.titulo || '').trim(), inicio: f.inicio || '', fim: f.fim || '',
+        local: String(f.local || '').trim(), responsavel: String(f.responsavel || '').trim(), publico: f.publico || 'todos',
+        campoId: f.tipo === 'pratica' ? (f.campoId || '') : '', vagas: f.vagas === '' || f.vagas == null ? 0 : Number(f.vagas) || 0, checkinAberto: f.checkinAberto !== false,
+        escalados: f.tipo === 'pratica' ? [...f.escalados] : [], status: f.status || 'agendada', obs: String(f.obs || ''), link: f.tipo === 'aula' ? String(f.link || '').trim() : ''
+      };
+      let ok = 0;
+      for (const d of datas) {
+        try { await gravar(`atividades/${novoId(f.tipo === 'aula' ? 'aula' : 'pr')}`, carimbo({ ...base, data: d, serieId, serieRegra }, true)); ok++; } catch { break; }
+        if (btnS && btnS.lastChild) btnS.lastChild.textContent = `Criando… ${ok}/${datas.length}`;
+      }
+      if (ok) { toast(`${plural(ok, f.tipo === 'aula' ? 'aula criada' : 'prática criada', f.tipo === 'aula' ? 'aulas criadas' : 'práticas criadas')} · ${serieRegra}.`, 'good'); fecharGaveta(); }
+      else if (btnS) btnS.disabled = false;
+      return;
+    }
     try {
       if (podeDados()) {
         const doc = {
@@ -3024,6 +3064,10 @@ function gavetaAtividade(id, preset = {}) {
         if (presMudou && temPres && doc.status === 'agendada' && doc.data <= hoje() && podePres()) { doc.status = 'realizada'; auto = true; }
         carimbo(doc, novo);
         await gravar(`atividades/${nid}`, doc);
+        if (!novo && escopo === 'proximas' && orig.serieId) {
+          const n = await aplicarNaSerie(doc);
+          if (n) extraMsg = n === 1 ? ' A próxima data da série também foi atualizada.' : ` As próximas ${n} datas da série também foram atualizadas.`;
+        }
       }
       if (presMudou && podePres()) {
         await gravar(`presencas/${nid}`, { registros: f.presencas, atualizadoEm: new Date().toISOString(), atualizadoPor: quemSou() });
@@ -3032,17 +3076,41 @@ function gavetaAtividade(id, preset = {}) {
           auto = true;
         }
       }
-      toast(novo ? 'Atividade criada.' : auto ? 'Presença lançada e atividade marcada como realizada.' : 'Alterações salvas.', 'good');
+      toast((novo ? 'Atividade criada.' : auto ? 'Presença lançada e atividade marcada como realizada.' : 'Alterações salvas.') + extraMsg, 'good');
       if (novo) { S.atRaw.set(nid, { ...(S.atRaw.get(nid) || {}), tipo: f.tipo, titulo: f.titulo, data: f.data, inicio: f.inicio, fim: f.fim, local: f.local, responsavel: f.responsavel, publico: f.publico, campoId: f.campoId, vagas: f.vagas, escalados: f.escalados, status: f.status, obs: f.obs, link: f.link, id: nid }); mesclar(); gavetaAtividade(nid); }
       else fecharGaveta();
     } catch { if (btnS) btnS.disabled = false; }
   }
   async function excluir() {
     try {
-      await gravar(`atividades/${orig.id}`, null, { apagar: true });
-      if (S.presRaw.has(orig.id) && pode('presencas')) await gravar(`presencas/${orig.id}`, null, { apagar: true }).catch(() => {});
-      toast('Atividade excluída.'); fecharGaveta();
+      const alvo = [orig, ...(escopo === 'proximas' ? serieIrmas() : [])];
+      for (const x of alvo) {
+        await gravar(`atividades/${x.id}`, null, { apagar: true });
+        if (S.presRaw.has(x.id) && pode('presencas')) await gravar(`presencas/${x.id}`, null, { apagar: true }).catch(() => {});
+      }
+      toast(alvo.length > 1 ? `${alvo.length} datas excluídas.` : 'Atividade excluída.'); fecharGaveta();
     } catch { /* tratado */ }
+  }
+  /* Copia para as próximas datas da série só o que mudou nesta (e desloca as datas, se a data mudou). */
+  async function aplicarNaSerie(doc) {
+    const CAMPOS = ['titulo', 'inicio', 'fim', 'local', 'responsavel', 'publico', 'campoId', 'vagas', 'checkinAberto', 'status', 'obs', 'link'];
+    const padrao = { checkinAberto: true, vagas: 0, status: 'agendada', publico: 'todos' };
+    const mud = {};
+    for (const k of CAMPOS) {
+      const antes = orig[k] ?? (k in padrao ? padrao[k] : '');
+      if (JSON.stringify(doc[k]) === JSON.stringify(antes)) continue;
+      if (k === 'status' && doc.status === 'realizada') continue;
+      mud[k] = doc[k];
+    }
+    const delta = doc.data !== orig.data ? Math.round((parseISO(doc.data) - parseISO(orig.data)) / 864e5) : 0;
+    if (!Object.keys(mud).length && !delta) return 0;
+    let n = 0;
+    for (const x of serieIrmas()) {
+      const up2 = { ...mud, atualizadoEm: new Date().toISOString(), atualizadoPor: quemSou() };
+      if (delta) up2.data = addDias(x.data, delta);
+      try { await gravar(`atividades/${x.id}`, up2, { atualizar: true }); n++; } catch { break; }
+    }
+    return n;
   }
   desenhar();
   if (preset.foco === 'checkin') setTimeout(() => { const el = document.getElementById('sec-checkin'); if (el) el.scrollIntoView({ block: 'start' }); }, 120);
@@ -3183,17 +3251,121 @@ function gavetaCampo(id) {
   desenhar();
 }
 
+/* ---------- recorrência de atividades (criação em série, editável) ---------- */
+const DOW_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const MAX_REPETICOES = 120;
+function novaRepeticao(data) {
+  return { tipo: 'nao', n: 1, unidade: 'semana', dias: [parseISO(data).getDay()], fim: 'data', ate: addDias(data, 56), vezes: 8, fora: new Set(), extras: new Set() };
+}
+function regraEfetiva(r, inicio) {
+  const dow = parseISO(inicio).getDay();
+  if (r.tipo === 'semanal') return { n: 1, unidade: 'semana', dias: [dow] };
+  if (r.tipo === 'quinzenal') return { n: 2, unidade: 'semana', dias: [dow] };
+  if (r.tipo === 'mensal') return { n: 1, unidade: 'mes', dias: [] };
+  return { n: Math.max(1, Math.min(52, Math.round(Number(r.n) || 1))), unidade: r.unidade || 'semana', dias: r.dias && r.dias.length ? [...r.dias].sort((x, y) => x - y) : [dow] };
+}
+function datasRecorrencia(r, inicio) {
+  if (!validISO(inicio) || r.tipo === 'nao') return [];
+  const g = regraEfetiva(r, inicio);
+  const limite = r.fim === 'vezes' ? Math.max(1, Math.min(MAX_REPETICOES, Math.round(Number(r.vezes) || 1))) : MAX_REPETICOES;
+  const ate = r.fim === 'data' ? (validISO(r.ate) ? r.ate : null) : null;
+  if (r.fim === 'data' && (!ate || ate < inicio)) return [];
+  const passou = d => !!ate && d > ate;
+  const out = [];
+  if (g.unidade === 'dia') {
+    for (let d = inicio; out.length < limite && !passou(d); d = addDias(d, g.n)) out.push(d);
+  } else if (g.unidade === 'semana') {
+    const base = addDias(inicio, -parseISO(inicio).getDay());
+    for (let k = 0; out.length < limite && k < 600; k++) {
+      const sem = addDias(base, 7 * g.n * k);
+      if (passou(sem)) break;
+      for (const dw of g.dias) { const d = addDias(sem, dw); if (d >= inicio && !passou(d) && out.length < limite) out.push(d); }
+    }
+  } else {
+    const p = parseISO(inicio), dia = p.getDate();
+    for (let k = 0; out.length < limite && k < 600; k++) {
+      const m = new Date(p.getFullYear(), p.getMonth() + g.n * k, 1);
+      if (passou(isoOf(m))) break;
+      const ult = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+      if (dia > ult) continue; // meses sem esse dia (ex.: 31) ficam de fora
+      const d = isoOf(new Date(m.getFullYear(), m.getMonth(), dia));
+      if (passou(d)) break;
+      out.push(d);
+    }
+  }
+  return out;
+}
+function descricaoRegra(r, inicio) {
+  const g = regraEfetiva(r, inicio);
+  const pl = { dia: 'dias', semana: 'semanas', mes: 'meses' }[g.unidade];
+  let t = g.n === 1 ? ({ dia: 'Todo dia', semana: 'Toda semana', mes: 'Todo mês' })[g.unidade] : `A cada ${g.n} ${pl}`;
+  if (g.unidade === 'semana') t += ' · ' + g.dias.map(d => DOW_CURTO[d]).join(', ');
+  if (g.unidade === 'mes') t += ` · dia ${parseISO(inicio).getDate()}`;
+  return t;
+}
+function datasFinais(r, inicio, existe) {
+  const set = new Set(datasRecorrencia(r, inicio).filter(d => !r.fora.has(d)));
+  for (const d of r.extras) if (validISO(d)) set.add(d);
+  return [...set].filter(d => !existe(d)).sort();
+}
+function blocoRepeticao(r, f, ed, redraw, existe) {
+  const tit = h('div', { class: 'sec-t' }, 'Repetição');
+  const tipoSel = field('Repetir', sel('at-rep', r.tipo, [['nao', 'Não se repete'], ['semanal', 'Toda semana'], ['quinzenal', 'A cada 2 semanas'], ['mensal', 'Todo mês, no mesmo dia'], ['personalizado', 'Personalizado…']], {
+    disabled: !ed, onchange: e => { r.tipo = e.target.value; r.fora.clear(); if (r.tipo === 'personalizado' && !r.dias.length) r.dias = [parseISO(f.data).getDay()]; redraw(); }
+  }), { wide: true });
+  if (r.tipo === 'nao') return h('div', { class: 'sec', id: 'sec-rep' }, tit, h('div', { class: 'grid2' }, tipoSel),
+    h('div', { class: 'fld-h' }, 'Para criar várias datas de uma vez, escolha a frequência. Você poderá ajustar cada data antes de criar.'));
+  const linhas = [tipoSel];
+  if (r.tipo === 'personalizado') {
+    const um = Number(r.n) === 1;
+    linhas.push(field('A cada', inp('at-rep-n', r.n, { type: 'number', min: 1, max: 52, disabled: !ed, onchange: e => { r.n = e.target.value; r.fora.clear(); redraw(); } })),
+      field('Unidade', sel('at-rep-un', r.unidade, [['dia', um ? 'dia' : 'dias'], ['semana', um ? 'semana' : 'semanas'], ['mes', um ? 'mês' : 'meses']], { disabled: !ed, onchange: e => { r.unidade = e.target.value; r.fora.clear(); redraw(); } })));
+    if (r.unidade === 'semana') linhas.push(field('Nos dias', h('div', { class: 'seg', role: 'group', id: 'at-rep-dias', 'aria-label': 'Dias da semana' },
+      DOW_CURTO.map((l, i) => h('button', { type: 'button', 'aria-pressed': String(r.dias.includes(i)), disabled: !ed, onclick: () => {
+        r.dias = r.dias.includes(i) ? r.dias.filter(x => x !== i) : [...r.dias, i]; if (!r.dias.length) r.dias = [i]; r.fora.clear(); redraw();
+      } }, l))), { wide: true }));
+  }
+  linhas.push(field('Termina', seg([['data', 'Numa data'], ['vezes', 'Após N vezes']], r.fim, v => { r.fim = v; r.fora.clear(); redraw(); }, { id: 'at-rep-fim', disabled: !ed })),
+    r.fim === 'data'
+      ? field('Última data', inp('at-rep-ate', r.ate, { type: 'date', disabled: !ed, onchange: e => { r.ate = e.target.value; redraw(); } }))
+      : field('Quantas vezes', inp('at-rep-vezes', r.vezes, { type: 'number', min: 1, max: MAX_REPETICOES, disabled: !ed, onchange: e => { r.vezes = e.target.value; redraw(); } })));
+  const geradas = datasRecorrencia(r, f.data);
+  const todas = [...new Set([...geradas, ...[...r.extras].filter(validISO)])].sort();
+  const finais = datasFinais(r, f.data, existe);
+  const chips = todas.map(d => {
+    const dup = existe(d), extra = r.extras.has(d) && !geradas.includes(d), on = !dup && !r.fora.has(d);
+    return h('button', { type: 'button', class: 'rep-d' + (dup ? ' dup' : '') + (extra ? ' extra' : ''), 'aria-pressed': String(on), disabled: !ed || dup,
+      title: dup ? 'Já existe uma prática deste campo nesta data' : extra ? 'Data avulsa: tocar para tirar' : on ? 'Tocar para tirar esta data' : 'Tocar para devolver esta data',
+      onclick: () => { if (extra) r.extras.delete(d); else if (r.fora.has(d)) r.fora.delete(d); else r.fora.add(d); redraw(); } },
+      fmt(d, { weekday: 'short', day: '2-digit', month: '2-digit' }).replace('.', '') + (dup ? ' · já existe' : ''));
+  });
+  const add = { v: '' };
+  return h('div', { class: 'sec', id: 'sec-rep' },
+    h('div', { class: 'sec-h' }, tit, h('span', { class: 'card-s', id: 'rep-resumo' }, `${descricaoRegra(r, f.data)} · ${plural(finais.length, 'data', 'datas')}`)),
+    h('div', { class: 'grid2' }, linhas),
+    todas.length ? h('div', { class: 'rep-datas', id: 'rep-datas' }, chips) : h('div', { class: 'note' }, 'Nenhuma data com essa regra. Ajuste a repetição ou a data de término.'),
+    ed ? h('div', { class: 'filters' }, inp('at-rep-extra', '', { type: 'date', oninput: e => { add.v = e.target.value; } }),
+      btn('Adicionar data avulsa', () => { if (!validISO(add.v)) { toast('Escolha a data para adicionar.', 'warn'); return; } r.fora.delete(add.v); r.extras.add(add.v); redraw(); }, { sm: true, icon: 'plus', id: 'at-rep-add' })) : null,
+    h('div', { class: 'fld-h' }, `Toque numa data para tirá-la ou devolvê-la. Até ${MAX_REPETICOES} datas por vez. Depois de criadas, cada data pode ser editada sozinha ou junto com as próximas da série.`));
+}
+
 /* ---------- modal: gerar dias de prática ---------- */
+/* Cria os dias a partir dos dias da semana de cada campo, com a frequência escolhida.
+   Nenhuma escala é montada automaticamente: a lista se forma pelo check-in e a diretoria confirma. */
 function modalGerar(campoId) {
   const ativos = [...S.campos.values()].filter(c => c.ativo !== false).sort(porNome);
   if (!ativos.length) { toast('Cadastre um campo de prática ativo primeiro.', 'warn'); return; }
-  const st = { campo: campoId || 'todos', de: hoje(), ate: addDias(hoje(), 27), auto: true, criando: false };
+  const st = { campo: campoId || 'todos', de: hoje(), ate: addDias(hoje(), 27), cada: 1, fora: new Set(), criando: false };
+  const cadaN = () => Math.max(1, Math.min(12, Math.round(Number(st.cada) || 1)));
   function plano() {
     const lista = [];
     if (!validISO(st.de) || !validISO(st.ate) || st.ate < st.de) return { lista, dup: 0 };
     const alvo = st.campo === 'todos' ? ativos : ativos.filter(c => c.id === st.campo);
+    const base = addDias(st.de, -parseISO(st.de).getDay()), cada = cadaN();
     let dup = 0;
     for (let d = st.de, n = 0; d <= st.ate && n < 400; d = addDias(d, 1), n++) {
+      const semana = Math.floor(Math.round((parseISO(d) - parseISO(base)) / 864e5) / 7);
+      if (semana % cada) continue;
       const dow = parseISO(d).getDay();
       for (const c of alvo) {
         if (!(c.dias || []).includes(dow)) continue;
@@ -3206,39 +3378,44 @@ function modalGerar(campoId) {
   }
   function desenhar() {
     const { lista, dup } = plano();
+    const valem = lista.filter(x => !st.fora.has(x.pid));
+    const cada = cadaN();
     const corpo = [
-      field('Campo de prática', sel('ger-campo', st.campo, [['todos', 'Todos os campos ativos'], ...ativos.map(c => [c.id, c.nome])], { onchange: e => { st.campo = e.target.value; desenhar(); } })),
+      field('Campo de prática', sel('ger-campo', st.campo, [['todos', 'Todos os campos ativos'], ...ativos.map(c => [c.id, c.nome])], { onchange: e => { st.campo = e.target.value; st.fora.clear(); desenhar(); } })),
       h('div', { class: 'grid2' },
         field('De', inp('ger-de', st.de, { type: 'date', onchange: e => { st.de = e.target.value; desenhar(); } })),
         field('Até', inp('ger-ate', st.ate, { type: 'date', onchange: e => { st.ate = e.target.value; desenhar(); } }))),
-      h('label', { class: 'switch' }, h('input', { type: 'checkbox', id: 'ger-auto', checked: st.auto, onchange: e => { st.auto = e.target.checked; } }),
-        h('span', null, 'Montar a escala automaticamente (rodízio equilibrado)')),
-      h('div', { class: 'fld-h' }, 'O rodízio escolhe primeiro quem tem menos práticas e está há mais tempo sem escala, respeitando o público do campo e sem repetir a pessoa no mesmo dia.'),
-      lista.length ? h('div', { class: 'sec' }, h('div', { class: 'sec-t' }, `${plural(lista.length, 'dia será criado', 'dias serão criados')}${dup ? ` · ${plural(dup, 'já existia', 'já existiam')}` : ''}`),
-        h('div', { class: 'prev' }, lista.slice(0, 60).map(x => h('div', null, h('span', null, fmt(x.d, { weekday: 'short', day: '2-digit', month: '2-digit' })), h('span', { class: 'card-s' }, x.c.nome)))))
+      field('Repetir a cada', h('div', { class: 'filters', style: 'gap:8px;align-items:center' },
+        inp('ger-cada', st.cada, { type: 'number', min: 1, max: 12, onchange: e => { st.cada = e.target.value; st.fora.clear(); desenhar(); } }),
+        h('span', null, cada === 1 ? 'semana' : 'semanas')), { hint: '1 = toda semana, 2 = semana sim, semana não, e assim por diante. Os dias da semana vêm do cadastro de cada campo.' }),
+      h('div', { class: 'note' }, 'Os dias são criados sem ninguém escalado. Os membros colocam o nome pelo check-in, e a Diretoria de Práticas ou a Presidência confirma ou retira cada nome.'),
+      lista.length ? h('div', { class: 'sec' },
+        h('div', { class: 'sec-t' }, `${plural(valem.length, 'dia será criado', 'dias serão criados')}${dup ? ` · ${plural(dup, 'já existia', 'já existiam')}` : ''}`),
+        h('div', { class: 'rep-datas', id: 'ger-datas' }, lista.slice(0, 200).map(x => {
+          const on = !st.fora.has(x.pid);
+          return h('button', { type: 'button', class: 'rep-d', 'aria-pressed': String(on), title: on ? 'Tocar para não criar este dia' : 'Tocar para criar este dia',
+            onclick: () => { if (on) st.fora.add(x.pid); else st.fora.delete(x.pid); desenhar(); } },
+            fmt(x.d, { weekday: 'short', day: '2-digit', month: '2-digit' }).replace('.', '') + (st.campo === 'todos' && ativos.length > 1 ? ' · ' + x.c.nome : ''));
+        })),
+        h('div', { class: 'fld-h' }, 'Toque num dia para tirá-lo (ou devolvê-lo) antes de criar.'))
         : h('div', { class: 'note' }, dup ? 'Todos os dias deste período já estão cadastrados.' : 'Nenhum dia do período coincide com os dias da semana do campo.')
     ];
-    abrirModal({ titulo: 'Gerar dias de prática', corpo, rodape: [h('span', { class: 'sp' }), btn('Cancelar', fecharModal), btn(st.criando ? 'Criando…' : `Criar ${lista.length || ''} ${lista.length === 1 ? 'dia' : 'dias'}`.replace('  ', ' '), () => criar(lista), { kind: 'primary', disabled: !lista.length || st.criando, id: 'ger-criar' })] });
+    abrirModal({ titulo: 'Gerar dias de prática', corpo, rodape: [h('span', { class: 'sp' }), btn('Cancelar', fecharModal), btn(st.criando ? 'Criando…' : `Criar ${valem.length || ''} ${valem.length === 1 ? 'dia' : 'dias'}`.replace('  ', ' '), () => criar(valem), { kind: 'primary', disabled: !valem.length || st.criando, id: 'ger-criar' })] });
   }
   async function criar(lista) {
     st.criando = true; desenhar();
-    const carga = cargaPraticas();
-    const ocupDia = new Map();
+    const cada = cadaN();
+    const series = new Map();
     let ok = 0;
     for (const { c, d, pid } of lista) {
-      let esc = [];
-      if (st.auto) {
-        if (!ocupDia.has(d)) ocupDia.set(d, ocupadosEm(d));
-        const oc = ocupDia.get(d);
-        esc = sugerirEscala({ data: d, vagas: c.vagas, publico: c.publico, carga, ocupados: oc });
-        for (const id of esc) { carga.c.set(id, (carga.c.get(id) || 0) + 1); carga.ult.set(id, d); oc.add(id); }
-      }
-      const doc = carimbo({ tipo: 'pratica', titulo: '', campoId: c.id, data: d, inicio: c.inicio || '', fim: c.fim || '', local: c.local || '', responsavel: c.preceptor || '', publico: c.publico || 'todos', vagas: Number(c.vagas) || 0, escalados: esc, status: 'agendada', obs: '', link: '' }, true);
+      if (!series.has(c.id)) series.set(c.id, { id: novoId('serie'), regra: `${cada === 1 ? 'Toda semana' : `A cada ${cada} semanas`} · ${[...(c.dias || [])].sort((x, y) => x - y).map(x => DOW_CURTO[x]).join(', ')}` });
+      const se = series.get(c.id);
+      const doc = carimbo({ tipo: 'pratica', titulo: '', campoId: c.id, data: d, inicio: c.inicio || '', fim: c.fim || '', local: c.local || '', responsavel: c.preceptor || '', publico: c.publico || 'todos', vagas: Number(c.vagas) || 0, escalados: [], status: 'agendada', obs: '', link: '', serieId: se.id, serieRegra: se.regra }, true);
       try { await gravar(`atividades/${pid}`, doc); ok++; } catch { break; }
       const b = document.getElementById('ger-criar'); if (b) b.lastChild.textContent = `Criando… ${ok}/${lista.length}`;
     }
     fecharModal();
-    if (ok) toast(`${plural(ok, 'dia de prática criado', 'dias de prática criados')}${st.auto ? ' com escala montada' : ''}.`, 'good');
+    if (ok) toast(`${plural(ok, 'dia de prática criado', 'dias de prática criados')}. Ninguém foi escalado: a lista se forma pelo check-in.`, 'good');
   }
   desenhar();
 }
